@@ -1,0 +1,26 @@
+---
+title: Software Developer
+company: Berkley Technology Services
+location: Urbandale, Iowa
+start: 2013-05
+end: 2015-09
+tags:
+---
+
+Supported and enhanced the enterprise policy system, with a focus on high-quality development practices, agile collaboration, and system integration improvements.
+
+### Key Contributions
+
+- **Policy System Development & Support**
+  - Maintained and enhanced the Genesys policy system, addressing bugs and implementing incremental improvements.
+  - Provided ongoing support and troubleshooting to ensure system reliability and user satisfaction.
+
+- **Agile Methodology & Code Quality**
+  - Practiced Agile development with emphasis on clean, maintainable code.
+  - Engaged in code reviews, wrote thorough documentation, and contributed to unit testing efforts.
+
+- **Systems Integration (Genesys & APS)**
+  - Acted as subject matter expert for the integration between Genesys and the Agency Profile System (APS) via PUB/SUB messages using IBM Message Broker.
+  - Led efforts to enhance message exchange reliability, optimize performance, and resolve systemic communication bugs.
+
+This role expanded my development capabilities in enterprise environments and deepened my specialization in systems integration and middleware communication.
