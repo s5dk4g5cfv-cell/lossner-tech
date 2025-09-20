@@ -53,6 +53,9 @@ const sortItemsForSection = (sectionId: string, items: ContentItem[]) => {
   if (sectionId === 'experience') {
     return [...items].sort((a, b) => b.filename.localeCompare(a.filename))
   }
+  if (sectionId === 'projects') {
+    return [...items].sort((a, b) => b.filename.localeCompare(a.filename))
+  }
   return items
 }
 
@@ -96,7 +99,7 @@ const TerminalResume = () => {
       id: createId(),
       role: 'system',
       heading: 'Welcome',
-      content: 'Explore the sections on the left or ask Alex anything about Joshua\'s work.',
+      content: "Thanks for visiting. Explore Joshua’s background, skills, and projects through the menu—or ask the assistant directly.",
     }])
   }, [])
 
@@ -225,7 +228,7 @@ const TerminalResume = () => {
     switch (action) {
       case 'contact': {
         const lines = [
-          '- Email: **joshua@lossner.tech**  ',
+          '- Email: **joshua.c.lossner@icloud.com**  ',
           '- LinkedIn: [linkedin.com/in/joshua-lossner](https://linkedin.com/in/joshua-lossner)  ',
           '- GitHub: [github.com/joshua-lossner](https://github.com/joshua-lossner)'
         ]
@@ -638,7 +641,7 @@ const TerminalResume = () => {
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
                   onKeyDown={handleInputKeyDown}
-                  placeholder={isProcessing ? 'Alex is thinking…' : 'Ask Alex a question or describe what you want to explore.'}
+                  placeholder={isProcessing ? 'Alex is thinking…' : 'Ask about Joshua’s work, skills, or projects…'}
                   className="w-full bg-transparent resize-none outline-none text-sm leading-6 placeholder:text-white/40 min-h-[44px]"
                   rows={1}
                   disabled={isProcessing}
