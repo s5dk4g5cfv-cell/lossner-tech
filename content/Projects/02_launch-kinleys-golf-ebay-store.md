@@ -5,6 +5,9 @@ role: IT Specialist / Operations Lead
 timeline: 2004-2005
 tags:
 ---
+## Launch of Kinley's Golf eBay Store
+**Kinley's Golf & Sports Center:** ***2004-2005***
+
 **Overview**
 Recognizing the rapid growth of online marketplaces, I launched Kinley’s Golf’s first **eBay store**, transforming the company’s ability to sell used and collectible golf equipment nationwide. The project bridged traditional retail operations with digital sales, creating a new revenue stream and expanding the company’s customer base beyond local shoppers.
 

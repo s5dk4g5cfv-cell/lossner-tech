@@ -6,6 +6,8 @@ start: 2021-06
 end: 2022-06
 tags:
 ---
+## Senior Solutions Consultant
+**Mumo Systems:** ***Jun 2021 - Jun 2022***
 
 Delivered high-impact consulting services for enterprise clients, specializing in Atlassian tool migrations, upgrades, and cloud transitions.
 
