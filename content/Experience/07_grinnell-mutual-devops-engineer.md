@@ -6,6 +6,8 @@ start: 2022-06
 end: present
 tags:
 ---
+## DevOps Engineer
+**Grinnell Mutual Insurance:** ***Jun 2022 - Present***
 
 Driving infrastructure modernization and process automation initiatives across internal and vendor-managed applications, while fostering strong documentation practices and systems understanding.
 

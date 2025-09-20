@@ -5,6 +5,9 @@ role: DevOps Engineer
 timeline: "2024"
 tags:
 ---
+## Migration to Automate Plus Server Platform
+**Grinnell Mutual Insurance:** ***2024***
+
 **Overview**
 
 Led the migration from **HelpSystems Automate Server** to the scalable **Automate-Plus** platform, modernizing the company’s job automation infrastructure. The project introduced a two-tier setup (QUA and PROD) and leveraged distributed agents to execute workloads more efficiently.

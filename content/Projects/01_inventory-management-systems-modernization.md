@@ -5,6 +5,9 @@ role: IT Specialist / Operations Lead
 timeline: 2004-2005
 tags:
 ---
+## Inventory Management Systems Modernization
+**Kinley's Golf & Sports Center:** ***2004 - 2005***
+
 **Overview**
 Tasked with modernizing a manual, paper-based inventory system, I researched, designed, and implemented a fully electronic solution for Kinley’s Golf. As the sole technical employee, I independently drove vendor selection, system design, and rollout while balancing my academic studies.
 

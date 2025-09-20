@@ -5,6 +5,9 @@ role: DevOps Engineer
 timeline: In Progress
 tags:
 ---
+## Guidewire DevContainers Implementation
+**Grinnell Mutual Insurance:** ***In Progress***
+
 **Overview**
 Currently leading the design and deployment of containerized development environments for **Guidewire InsuranceSuite applications** (PolicyCenter, ClaimCenter, BillingCenter, ContactManager). The initiative replaces traditional manual environment setup with **automated Docker-based containers**, enabling rapid, consistent developer onboarding and improving efficiency for Guidewire projects.
 

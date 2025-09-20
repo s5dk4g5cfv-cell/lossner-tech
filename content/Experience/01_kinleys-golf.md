@@ -1,11 +1,13 @@
 ---
-title: Operations and Technical Specialist
+title: Operations and IT Specialist
 company: Kinley’s Golf & Sports Center
 location: Des Moines, Iowa
 start: 1993-02
 end: 2006-12
 tags:
 ---
+## General Employee - Operations and IT Specialist
+**Kinley's Golf & Sports Center:** ***Feb 1993 - Dec 2006***
 
 Over a 13-year tenure, served in progressively advanced roles from general labor to technical and operational leadership. Played a pivotal role in transforming Kinley's business systems, technology stack, and customer service experience.
 

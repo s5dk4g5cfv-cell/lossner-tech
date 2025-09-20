@@ -6,6 +6,8 @@ start: 2015-10
 end: 2021-06
 tags:
 ---
+## Software Engineer
+**Berkley Technology Services:** ***Oct 2015 - Jun 2021***
 
 Led the charge on release automation and Atlassian ecosystem integration, dramatically increasing deployment velocity and system interoperability across development teams.
 

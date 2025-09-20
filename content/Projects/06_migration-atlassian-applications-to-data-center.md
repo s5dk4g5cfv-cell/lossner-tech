@@ -5,6 +5,9 @@ role: Software Engineer
 timeline: 2017-2018
 tags:
 ---
+## Migration of Atlassian Applications to Data Center
+**Berkley Technology Serivces:** ***2017-2018***
+
 **Overview**
 Led the enterprise-wide migration of **Atlassian applications** from standalone server deployments to clustered **Data Center editions**, improving scalability, resilience, and enterprise support. Applications included **Jira, Confluence, Bitbucket, Bamboo, and Crowd** — all critical to development, release, and collaboration across the company.
 

@@ -5,6 +5,9 @@ role: Software Engineer
 timeline: 2015-2016
 tags:
 ---
+## Release Automation Framework for Enterprise Application Deployments
+**Berkley Technology Serivces:** ***2015-2016***
+
 **Overview**
 After three failed attempts to implement a release automation framework, I re-joined the Release Management team to help design and deliver a successful solution. The initiative began with the **Genesys Policy Administration** application, one of the company’s most complex systems, used by over a dozen WR Berkley subsidiaries. From there, the framework scaled to handle nearly all enterprise application releases, transforming release management at a global level.
 
