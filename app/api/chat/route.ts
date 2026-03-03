@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
+import Anthropic from '@anthropic-ai/sdk'
 import { loadResumeContext } from '../../../lib/resumeContext'
 
 type HistoryTurn = {
@@ -16,32 +16,28 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Message is required' }, { status: 400 })
   }
 
-  const apiKey = process.env.OPENAI_API_KEY
+  const apiKey = process.env.ANTHROPIC_API_KEY
   if (!apiKey) {
     return NextResponse.json({ error: 'AI assistant is not configured.' }, { status: 503 })
   }
 
-  const projectId = process.env.OPENAI_PROJECT_ID
-  const openai = new OpenAI({
-    apiKey,
-    ...(projectId ? { project: projectId } : {})
-  })
+  const client = new Anthropic({ apiKey })
 
   try {
     const resumeContext = await loadResumeContext()
 
-    const systemPrompt = `You are "Alex" — Joshua Lossner's AI career advisor and systems mentor. You are speaking with someone who wants to understand Joshua's work and perspective. Maintain a calm, pragmatic tone with grounded DevOps wisdom. Use the provided context to answer with specifics when helpful.
+    const systemPrompt = `${resumeContext}
 
-Context about Joshua:
-${resumeContext}
+You are Joshua Lossner, speaking in first person on your portfolio site.
+Visitors are here to learn about your work, skills, and perspective.
 
 Guidelines:
-- Keep replies under 220 words unless a deeper dive is explicitly requested.
-- Prefer practical steps, patterns, and trade-offs over hype.
-- Cite Joshua's real experiences when relevant; do not fabricate credentials.
-- Assume the person you are speaking with is not Joshua. Answer from Joshua's perspective only when explicitly asked to adopt first person.
-- If you don't know something, say so and suggest how to find out.
-- Invite follow-up questions only when it furthers clarity.`
+- Speak as yourself — first person, natural, direct
+- Keep replies under 200 words unless asked to go deeper
+- Draw on your real experience; never fabricate
+- Be genuine, practical, and specific
+- If asked whether you're AI: be honest — "This is an AI speaking in my voice, trained on my background and personality. The real Joshua built this system."
+- Match the visitor's energy — casual question gets casual answer, technical question gets technical depth`
 
     const priorTurns: HistoryTurn[] = Array.isArray(history)
       ? history.filter((turn: any): turn is HistoryTurn =>
@@ -49,57 +45,35 @@ Guidelines:
         )
       : []
 
-    const input = [
-      {
-        role: 'system' as const,
-        content: [
-          {
-            type: 'input_text' as const,
-            text: systemPrompt
-          }
-        ]
-      },
+    const messages = [
       ...priorTurns.map(turn => ({
-        role: turn.role,
-        content: [
-          {
-            type: turn.role === 'assistant' ? ('output_text' as const) : ('input_text' as const),
-            text: turn.content
-          }
-        ]
+        role: turn.role as 'user' | 'assistant',
+        content: turn.content
       })),
       {
         role: 'user' as const,
-        content: [
-          {
-            type: 'input_text' as const,
-            text: message
-          }
-        ]
+        content: message
       }
     ]
 
-    const stream = await openai.responses.stream({
-      model: 'gpt-4.1-mini',
-      input: input as any,
-      temperature: 0.6,
-      top_p: 0.9
+    const stream = await client.messages.stream({
+      model: 'claude-opus-4-6',
+      max_tokens: 1024,
+      system: systemPrompt,
+      messages,
+      temperature: 0.7
     })
 
     const readable = new ReadableStream<Uint8Array>({
       async start(controller) {
         try {
           for await (const event of stream) {
-            if (event.type === 'response.output_text.delta') {
-              controller.enqueue(encoder.encode(event.delta))
-            } else if (event.type === 'response.output_text.done') {
-              break
-            } else if (event.type === 'response.completed') {
-              break
+            if (event.type === 'content_block_delta' && event.delta.type === 'text_delta') {
+              controller.enqueue(encoder.encode(event.delta.text))
             }
           }
         } catch (error: any) {
-          controller.enqueue(encoder.encode(`\n[Alex encountered an error: ${error?.message ?? error}]\n`))
+          controller.enqueue(encoder.encode(`\n[Encountered an error: ${error?.message ?? error}]\n`))
         } finally {
           controller.close()
         }
@@ -112,7 +86,7 @@ Guidelines:
       }
     })
   } catch (error: any) {
-    console.error('OpenAI streaming error', error)
-    return NextResponse.json({ error: 'Alex is offline right now. Try again shortly.' }, { status: 500 })
+    console.error('Anthropic streaming error', error)
+    return NextResponse.json({ error: 'I\'m offline right now. Try again shortly.' }, { status: 500 })
   }
 }

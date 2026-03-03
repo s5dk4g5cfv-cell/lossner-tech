@@ -126,6 +126,7 @@ export async function loadResumeContext(): Promise<string> {
   }
 
   try {
+    const voice = await readDirectoryEntries('Voice')
     const about = await readDirectoryEntries('About')
     const experience = await readDirectoryEntries('Experience')
     const education = await readDirectoryEntries('Education')
@@ -133,6 +134,7 @@ export async function loadResumeContext(): Promise<string> {
     const skills = await readDirectoryEntries('Skills')
     const journal = await readDirectoryEntries('Journal')
 
+    const voiceContent = voice.map(entry => entry.body).filter(Boolean).join('\n\n')
     const aboutSummary = about.map(entry => summarizeBody(entry.body, 600)).join('\n\n')
     const experienceSummary = formatExperience(experience)
     const educationSummary = formatEducation(education)
@@ -141,6 +143,7 @@ export async function loadResumeContext(): Promise<string> {
     const journalSummary = formatJournal(journal.slice(0, 3))
 
     const compiled = [
+      voiceContent ? `Voice & Personality:\n${voiceContent}` : null,
       aboutSummary ? `About Joshua:\n${aboutSummary}` : null,
       experienceSummary ? `Experience Highlights:\n${experienceSummary}` : null,
       educationSummary ? `Education:\n${educationSummary}` : null,

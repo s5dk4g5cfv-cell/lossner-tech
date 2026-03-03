@@ -100,7 +100,7 @@ const TerminalResume = () => {
       id: createId(),
       role: 'system',
       heading: 'Welcome',
-      content: "Thanks for visiting. Explore Joshua's background, skills, and projects through the menu—or ask the assistant directly.",
+      content: "Hey — thanks for stopping by. Browse my work through the menu, or just ask me anything.",
     }])
   }, [])
 
@@ -405,7 +405,7 @@ const TerminalResume = () => {
         await generateSpeech(responseText)
       }
     } catch (error: any) {
-      const fallbackContent = typeof error?.message === 'string' ? error.message : 'Alex had trouble responding just now. Try again in a moment.'
+      const fallbackContent = typeof error?.message === 'string' ? error.message : 'Had trouble responding just now. Try again in a moment.'
       replaceMessage(aiMessageId, () => ({
         id: aiMessageId,
         role: 'system',
@@ -437,11 +437,11 @@ const TerminalResume = () => {
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '')
-      throw new Error(errorText || 'Alex is unavailable right now.')
+      throw new Error(errorText || 'Unavailable right now.')
     }
 
     if (!response.body) {
-      throw new Error('Empty response from Alex.')
+      throw new Error('Empty response.')
     }
 
     const reader = response.body.getReader()
@@ -668,7 +668,7 @@ const TerminalResume = () => {
                       rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'Alex is thinking\u2026' : 'Ask about Joshua'}
+                  placeholder={isProcessing ? 'Thinking\u2026' : 'Ask me anything'}
                   className="flex-1 bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[36px] py-1"
                   rows={1}
                   disabled={isProcessing}
