@@ -9,30 +9,24 @@ tags:
 **Grinnell Mutual Insurance:** ***In Progress***
 
 **Overview**
-Currently leading the design and deployment of containerized development environments for **Guidewire InsuranceSuite applications** (PolicyCenter, ClaimCenter, BillingCenter, ContactManager). The initiative replaces traditional manual environment setup with **automated Docker-based containers**, enabling rapid, consistent developer onboarding and improving efficiency for Guidewire projects.
+Leading the design and deployment of the first known successful containerization of **Guidewire InsuranceSuite** development environments using Docker and IntelliJ Remote Development Server. The initiative replaces traditional VDI-based developer setups with automated, reproducible DevContainers for all four InsuranceSuite applications (PolicyCenter, ClaimCenter, BillingCenter, ContactManager), representing approximately 690 hours of R&D across five months with zero existing precedent or community resources to draw from.
 
 **Contributions to Date**
-- **Environment Automation**
-    - Built PowerShell scripts for SSH key management and Git credential handling.
-    - Designed containers supporting all four InsuranceSuite applications.
-- **Database Integration**
-    - Automated SQL Server and H2 database creation and connectivity.
-    - Integrated database provisioning into the container lifecycle.
-- **Remote Development Enablement**
-    - Configured **JetBrains Gateway** for seamless remote IntelliJ IDEA access.
-    - Tuned IntelliJ VM options and plugin management for optimized performance.
-- **Infrastructure & Workflow**
-    - Deployed orchestration scripts supporting 10+ RHEL development servers in batch operations.
-    - Implemented **Samba file sharing** for cross-platform workflows.
-    - Secured credential handling with **Docker secrets**.
+- **IntelliJ Remote Development Server Discovery** — Resolved a critical 60-hour technical breakthrough involving IntelliJ's undocumented plugin architecture for Remote Development Server, discovering that it uses project-specific plugin isolation rather than global plugin directories — knowledge with zero public documentation available at the time.
+- **Environment Automation** — Built PowerShell and Bash automation scripts for SSH key management, Git credential handling, and container lifecycle management. Designed application-specific containers with tuned memory configurations (16–24 GB per container) supporting dual Java runtimes (Java 11 for Guidewire, Java 17 for IntelliJ).
+- **Infrastructure & Deployment** — Deployed and managed 10 RHEL development servers with a centralized Docker registry for image distribution. Implemented batch deployment orchestration, Samba file sharing for cross-platform access, and Ansible/AWX automation for infrastructure management.
+- **Database Integration** — Automated SQL Server and H2 database provisioning within the container lifecycle, including database creation, read-committed snapshot isolation configuration, and IntelliJ data source pre-configuration.
+- **Remote Development Enablement** — Configured JetBrains Gateway for seamless remote IntelliJ IDEA access. Consolidated Guidewire plugins from multiple sources (IntelliJ, gwplugins, Studio) into application-specific directories. Tuned IntelliJ VM options and memory settings per application to prevent OOM errors.
+- **Security & Compliance** — Integrated Snyk Security for container vulnerability scanning. Secured credential handling with Docker secrets and per-developer isolated credential directories.
 
 **Status**
 
-- Beta deployment with eight developers actively using the environment.
-- Expanding support and refinement across additional development teams.
+- Beta deployment with 8 developers completed successfully across 10 dedicated RHEL servers.
+- Several developers have opted to continue using the containers beyond the beta period and will do so until the production project is complete.
+- Now entering official production project phase — beginning implementation into VMware Cloud Foundation with vSphere Kubernetes Service (VKS).
 
-**Anticipated Impact**
+**Impact**
 
-- Reducing developer environment setup time from hours to minutes.
-- Ensuring **consistency, reproducibility, and scalability** across teams.
-- Establishing a foundation for future containerized Guidewire development at scale.
+- Reducing developer environment setup from hours of manual configuration to automated container deployment.
+- Providing consistent, isolated, reproducible development environments across the team.
+- Establishing a foundation for enterprise Kubernetes-based Guidewire development at scale.
