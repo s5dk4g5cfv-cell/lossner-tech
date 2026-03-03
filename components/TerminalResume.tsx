@@ -49,8 +49,14 @@ const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
 
-const stripLeadingHeading = (content: string) =>
-  content.replace(/^#{1,3}\s+[^\n]+\n+/, '')
+const stripLeadingMeta = (content: string) => {
+  // Strip the heading line (## Title)
+  let result = content.replace(/^#{1,3}\s+[^\n]+\n/, '')
+  // Strip bold/italic metadata lines (company, dates) and trailing blank line
+  // that sit between the heading and the real content
+  result = result.replace(/^(\s*\*{1,3}[^\n]*?\*{1,3}\s*\n)+\s*\n?/, '')
+  return result
+}
 
 const sortItemsForSection = (sectionId: string, items: ContentItem[]) => {
   if (sectionId === 'experience') {
@@ -227,7 +233,7 @@ const TerminalResume = () => {
         id: createId(),
         role: 'ai',
         heading,
-        content: stripLeadingHeading(data.content ?? ''),
+        content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
         meta: item.metadata?.period || item.metadata?.timeline || item.metadata?.status
       })
@@ -314,7 +320,7 @@ const TerminalResume = () => {
             id: createId(),
             role: 'ai',
             heading: section.label,
-            content: stripLeadingHeading(data.content ?? ''),
+            content: stripLeadingMeta(data.content ?? ''),
             isMarkdown: true,
             meta: firstItem.metadata?.period || firstItem.metadata?.timeline || firstItem.metadata?.status,
           })
