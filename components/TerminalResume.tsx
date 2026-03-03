@@ -93,14 +93,36 @@ const TerminalResume = () => {
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     setMessages([{
       id: createId(),
       role: 'system',
       heading: 'Welcome',
-      content: "Thanks for visiting. Explore Joshua’s background, skills, and projects through the menu—or ask the assistant directly.",
+      content: "Thanks for visiting. Explore Joshua's background, skills, and projects through the menu—or ask the assistant directly.",
     }])
+  }, [])
+
+  // Adjust layout height for iOS virtual keyboard and dynamic viewport
+  useEffect(() => {
+    const viewport = window.visualViewport
+    if (!viewport) return
+
+    const updateHeight = () => {
+      if (rootRef.current) {
+        rootRef.current.style.height = `${viewport.height}px`
+      }
+    }
+
+    viewport.addEventListener('resize', updateHeight)
+    viewport.addEventListener('scroll', updateHeight)
+    updateHeight()
+
+    return () => {
+      viewport.removeEventListener('resize', updateHeight)
+      viewport.removeEventListener('scroll', updateHeight)
+    }
   }, [])
 
   const [autoScrollMessageId, setAutoScrollMessageId] = useState<string | null>(null)
@@ -563,7 +585,7 @@ const TerminalResume = () => {
   }
 
   return (
-    <div className="h-screen bg-slate-950 text-slate-100 flex overflow-hidden">
+    <div ref={rootRef} className="h-[100dvh] bg-slate-950 text-slate-100 flex overflow-hidden">
       <aside className={`hidden lg:flex ${sidebarWidthClasses} border-r border-white/10 bg-slate-900/70 backdrop-blur flex-shrink-0`}>
         <div className="flex h-full w-full flex-col overflow-hidden">
           {!isSidebarCollapsed && <div className="h-3 border-b border-white/10"></div>}
@@ -641,8 +663,14 @@ const TerminalResume = () => {
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
                   onKeyDown={handleInputKeyDown}
+                  onFocus={() => {
+                    // On iOS, scroll the form into view after keyboard appears
+                    setTimeout(() => {
+                      rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+                    }, 300)
+                  }}
                   placeholder={isProcessing ? 'Alex is thinking…' : 'Ask about Joshua’s work, skills, or projects…'}
-                  className="w-full bg-transparent resize-none outline-none text-sm leading-6 placeholder:text-white/40 min-h-[44px]"
+                  className="w-full bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[44px]"
                   rows={1}
                   disabled={isProcessing}
                 />
