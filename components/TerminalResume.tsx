@@ -49,6 +49,9 @@ const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
 
+const stripLeadingHeading = (content: string) =>
+  content.replace(/^#{1,3}\s+[^\n]+\n+/, '')
+
 const sortItemsForSection = (sectionId: string, items: ContentItem[]) => {
   if (sectionId === 'experience') {
     return [...items].sort((a, b) => b.filename.localeCompare(a.filename))
@@ -224,7 +227,7 @@ const TerminalResume = () => {
         id: createId(),
         role: 'ai',
         heading,
-        content: data.content ?? '',
+        content: stripLeadingHeading(data.content ?? ''),
         isMarkdown: true,
         meta: item.metadata?.period || item.metadata?.timeline || item.metadata?.status
       })
@@ -311,7 +314,7 @@ const TerminalResume = () => {
             id: createId(),
             role: 'ai',
             heading: section.label,
-            content: data.content ?? '',
+            content: stripLeadingHeading(data.content ?? ''),
             isMarkdown: true,
             meta: firstItem.metadata?.period || firstItem.metadata?.timeline || firstItem.metadata?.status,
           })
