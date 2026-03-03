@@ -2,7 +2,8 @@
 title: Guidewire DevContainers Implementation
 company: Grinnell Mutual Insurance
 role: DevOps Engineer
-timeline: In Progress
+timeline: "2025"
+status: in-progress
 tags:
 ---
 ## Guidewire DevContainers Implementation

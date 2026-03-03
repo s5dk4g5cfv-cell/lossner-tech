@@ -3,6 +3,7 @@ title: Inventory Management Systems Modernization
 company: Kinley’s Golf & Sports Center
 role: IT Specialist / Operations Lead
 timeline: 2004-2005
+status: completed
 tags:
 ---
 ## Inventory Management Systems Modernization

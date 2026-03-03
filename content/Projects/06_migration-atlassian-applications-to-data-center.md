@@ -3,6 +3,7 @@ title: Migration of Atlassian Applications to Data Center
 company: Berkley Technology Services
 role: Software Engineer
 timeline: 2017-2018
+status: completed
 tags:
 ---
 ## Migration of Atlassian Applications to Data Center
