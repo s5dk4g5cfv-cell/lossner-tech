@@ -2,11 +2,11 @@
 title: Coherenceism.media
 company: Personal Project
 role: Producer & Developer
-timeline: 2025–Present
+timeline: 2026–Present
 tags:
 ---
 ## Coherenceism.media
-**Personal Project:** ***2025–Present***
+**Personal Project:** ***2026–Present***
 
 **Overview**
 A streaming music platform showcasing AI-composed music grounded in philosophical field observations. Each song originates from a coherenceism.blog post — a multi-agent band (lyricist, guitarist, bassist, producer) transforms the observation's themes into original music produced through Suno. The platform hosts 16 albums, 185 tracks across 5 philosophical rivers, with a full catalog management and one-command publishing pipeline.

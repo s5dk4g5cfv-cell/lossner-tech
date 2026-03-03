@@ -2,11 +2,11 @@
 title: CORA — Coherent Operating & Reasoning Architecture
 company: Personal Project
 role: Creator & Systems Architect
-timeline: 2024–Present
+timeline: 2025–Present
 tags:
 ---
 ## CORA — Coherent Operating & Reasoning Architecture
-**Personal Project:** ***2024–Present***
+**Personal Project:** ***2025–Present***
 
 **Overview**
 CORA is a filesystem-native personal AI infrastructure that enables named AI agents to hydrate themselves with identity, context, and capabilities through structured Markdown files with zero application dependencies. Built on the philosophical foundation of Coherenceism, CORA treats the filesystem as an operating system for thought — knowledge isn't stored in databases but woven into an interconnected web of human-readable text files. Every file is markdown, every procedure is text, every workflow is executable by any sufficiently capable AI agent. Radically portable: no migrations, no vendor lock-in, no bit rot.
