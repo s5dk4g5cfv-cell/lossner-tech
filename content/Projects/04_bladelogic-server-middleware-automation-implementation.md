@@ -3,6 +3,7 @@ title: BladeLogic Server & Middleware Automation Implementation
 company: Berkley Technology Services
 role: Websphere Administrator
 timeline: 2010-2011
+status: completed
 tags:
 ---
 ## BladeLogic Server & Middleware Automation Implementation

@@ -3,6 +3,7 @@ title: StarTeam Upgrade & Change Form Customization
 company: Berkley Technology Services
 role: Software Configuration Analyst
 timeline: "2009"
+status: completed
 tags:
 ---
 ## StarTeam Upgrade & Change Form Customization

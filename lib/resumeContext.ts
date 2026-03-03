@@ -73,8 +73,9 @@ function formatProjects(items: Array<{ metadata: Record<string, any>; body: stri
       const title = item.metadata.title ?? 'Project'
       const role = item.metadata.role ? ` — ${item.metadata.role}` : ''
       const timeline = item.metadata.timeline ? ` (${item.metadata.timeline})` : ''
+      const status = item.metadata.status === 'in-progress' ? ' [IN PROGRESS]' : item.metadata.status === 'completed' ? ' [COMPLETED]' : ''
       const summary = summarizeBody(item.body, 240)
-      return `- ${title}${role}${timeline}\n  ${summary}`
+      return `- ${title}${role}${timeline}${status}\n  ${summary}`
     })
     .join('\n')
 }
@@ -126,6 +127,7 @@ export async function loadResumeContext(): Promise<string> {
   }
 
   try {
+    const voice = await readDirectoryEntries('Voice')
     const about = await readDirectoryEntries('About')
     const experience = await readDirectoryEntries('Experience')
     const education = await readDirectoryEntries('Education')
@@ -133,6 +135,7 @@ export async function loadResumeContext(): Promise<string> {
     const skills = await readDirectoryEntries('Skills')
     const journal = await readDirectoryEntries('Journal')
 
+    const voiceContent = voice.map(entry => entry.body).filter(Boolean).join('\n\n')
     const aboutSummary = about.map(entry => summarizeBody(entry.body, 600)).join('\n\n')
     const experienceSummary = formatExperience(experience)
     const educationSummary = formatEducation(education)
@@ -141,6 +144,7 @@ export async function loadResumeContext(): Promise<string> {
     const journalSummary = formatJournal(journal.slice(0, 3))
 
     const compiled = [
+      voiceContent ? `Voice & Personality:\n${voiceContent}` : null,
       aboutSummary ? `About Joshua:\n${aboutSummary}` : null,
       experienceSummary ? `Experience Highlights:\n${experienceSummary}` : null,
       educationSummary ? `Education:\n${educationSummary}` : null,
