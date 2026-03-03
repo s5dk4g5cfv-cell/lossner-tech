@@ -657,8 +657,8 @@ const TerminalResume = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="flex-none border-t border-white/10 bg-slate-950/85 backdrop-blur">
-            <div className="px-[clamp(16px,4vw,64px)] py-4 space-y-3 max-w-[1200px] mx-auto w-full">
-              <div className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3 focus-within:border-emerald-400/70 transition">
+            <div className="px-[clamp(16px,4vw,64px)] py-3 max-w-[1200px] mx-auto w-full">
+              <div className="rounded-2xl border border-white/10 bg-white/5 pl-4 pr-2 py-2 focus-within:border-emerald-400/70 transition flex items-end gap-2">
                 <textarea
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
@@ -669,32 +669,26 @@ const TerminalResume = () => {
                       rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'Alex is thinking…' : 'Ask about Joshua’s work, skills, or projects…'}
-                  className="w-full bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[44px]"
+                  placeholder={isProcessing ? 'Alex is thinking…' : 'Ask about Joshua's work, skills, or projects…'}
+                  className="flex-1 bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[36px] py-1"
                   rows={1}
                   disabled={isProcessing}
                 />
-              </div>
-              <div className="flex flex-wrap items-center justify-between gap-3 text-xs text-white/50">
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={toggleAudio}
-                    className={`rounded-full border px-3 py-1.5 transition ${audioEnabled ? 'border-emerald-400/70 text-emerald-200' : 'border-white/10 hover:border-emerald-400/60 hover:text-emerald-200'}`}
-                    disabled={isProcessing}
-                  >
-                    {audioEnabled ? 'AUDIO: ON' : 'AUDIO: OFF'}
-                  </button>
-                  {isProcessing && <span>Working…</span>}
-                </div>
                 <button
                   type="submit"
-                  className="inline-flex items-center gap-2 rounded-full bg-emerald-500 px-4 py-2 text-sm font-semibold text-emerald-950 hover:bg-emerald-400 transition disabled:opacity-50"
+                  className="flex-none flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition disabled:opacity-30 mb-0.5"
                   disabled={isProcessing || !currentInput.trim()}
+                  aria-label="Send message"
                 >
-                  Send
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                    <path d="M12 19V5" />
+                    <path d="m5 12 7-7 7 7" />
+                  </svg>
                 </button>
               </div>
+              {isProcessing && (
+                <p className="text-xs text-white/50 mt-2 ml-1">Working…</p>
+              )}
             </div>
           </form>
         </main>
