@@ -229,6 +229,12 @@ const TerminalResume = () => {
     try {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
+      const m = item.metadata ?? {}
+      const metaParts = [
+        m.company,
+        m.period || m.timeline || (m.start ? `${m.start} – ${m.end || 'Present'}` : null),
+        m.status
+      ].filter(Boolean)
       appendMessage({
         id: createId(),
         role: 'ai',
@@ -236,7 +242,7 @@ const TerminalResume = () => {
         title: data.title ?? item.title,
         content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
-        meta: item.metadata?.period || item.metadata?.timeline || item.metadata?.status
+        meta: metaParts.join(' · ') || undefined
       })
       if (audioEnabled && data.content) {
         await generateSpeech(data.content)
