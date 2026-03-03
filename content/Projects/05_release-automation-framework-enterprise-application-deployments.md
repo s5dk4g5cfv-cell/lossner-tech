@@ -3,6 +3,7 @@ title: Release Automation Framework for Enterprise Application Deployments
 company: Berkley Technology Services
 role: Software Engineer
 timeline: 2015-2016
+status: completed
 tags:
 ---
 ## Release Automation Framework for Enterprise Application Deployments

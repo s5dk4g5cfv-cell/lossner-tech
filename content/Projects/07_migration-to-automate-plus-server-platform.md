@@ -3,6 +3,7 @@ title: Migration to Automate Plus Server Platform
 company: Grinnell Mutual Insurance
 role: DevOps Engineer
 timeline: "2024"
+status: completed
 tags:
 ---
 ## Migration to Automate Plus Server Platform

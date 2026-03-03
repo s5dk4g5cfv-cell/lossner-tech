@@ -73,8 +73,9 @@ function formatProjects(items: Array<{ metadata: Record<string, any>; body: stri
       const title = item.metadata.title ?? 'Project'
       const role = item.metadata.role ? ` — ${item.metadata.role}` : ''
       const timeline = item.metadata.timeline ? ` (${item.metadata.timeline})` : ''
+      const status = item.metadata.status === 'in-progress' ? ' [IN PROGRESS]' : item.metadata.status === 'completed' ? ' [COMPLETED]' : ''
       const summary = summarizeBody(item.body, 240)
-      return `- ${title}${role}${timeline}\n  ${summary}`
+      return `- ${title}${role}${timeline}${status}\n  ${summary}`
     })
     .join('\n')
 }
