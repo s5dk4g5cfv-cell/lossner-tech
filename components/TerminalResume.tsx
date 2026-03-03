@@ -11,6 +11,7 @@ type Message = {
   role: MessageRole
   content: string
   heading?: string
+  title?: string
   isMarkdown?: boolean
   meta?: string
 }
@@ -48,6 +49,15 @@ const SECTION_DEFINITIONS: SectionDefinition[] = [
 const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.directory)?.id ?? SECTION_DEFINITIONS[0]?.id ?? null
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
+
+const stripLeadingMeta = (content: string) => {
+  // Strip the heading line (## Title)
+  let result = content.replace(/^#{1,3}\s+[^\n]+\n/, '')
+  // Strip bold/italic metadata lines (company, dates) and trailing blank line
+  // that sit between the heading and the real content
+  result = result.replace(/^(\s*\*{1,3}[^\n]*?\*{1,3}\s*\n)+\s*\n?/, '')
+  return result
+}
 
 const sortItemsForSection = (sectionId: string, items: ContentItem[]) => {
   if (sectionId === 'experience') {
@@ -219,14 +229,20 @@ const TerminalResume = () => {
     try {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
-      const heading = `${section.label} · ${data.title ?? item.title}`
+      const m = item.metadata ?? {}
+      const metaParts = [
+        m.company,
+        m.period || m.timeline || (m.start ? `${m.start} – ${m.end || 'Present'}` : null),
+        m.status
+      ].filter(Boolean)
       appendMessage({
         id: createId(),
         role: 'ai',
-        heading,
-        content: data.content ?? '',
+        heading: section.label,
+        title: data.title ?? item.title,
+        content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
-        meta: item.metadata?.period || item.metadata?.timeline || item.metadata?.status
+        meta: metaParts.join(' · ') || undefined
       })
       if (audioEnabled && data.content) {
         await generateSpeech(data.content)
@@ -311,7 +327,7 @@ const TerminalResume = () => {
             id: createId(),
             role: 'ai',
             heading: section.label,
-            content: data.content ?? '',
+            content: stripLeadingMeta(data.content ?? ''),
             isMarkdown: true,
             meta: firstItem.metadata?.period || firstItem.metadata?.timeline || firstItem.metadata?.status,
           })
@@ -512,6 +528,9 @@ const TerminalResume = () => {
               <p className="text-sm font-semibold text-white/80 mb-1 uppercase tracking-wide">
                 {message.heading}
               </p>
+            )}
+            {message.title && (
+              <h2 className="text-lg font-bold text-white mb-1">{message.title}</h2>
             )}
             {message.meta && (
               <p className="text-xs text-white/60 mb-2">{message.meta}</p>
