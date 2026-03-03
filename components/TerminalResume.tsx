@@ -11,6 +11,7 @@ type Message = {
   role: MessageRole
   content: string
   heading?: string
+  title?: string
   isMarkdown?: boolean
   meta?: string
 }
@@ -228,11 +229,11 @@ const TerminalResume = () => {
     try {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
-      const heading = `${section.label} · ${data.title ?? item.title}`
       appendMessage({
         id: createId(),
         role: 'ai',
-        heading,
+        heading: section.label,
+        title: data.title ?? item.title,
         content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
         meta: item.metadata?.period || item.metadata?.timeline || item.metadata?.status
@@ -521,6 +522,9 @@ const TerminalResume = () => {
               <p className="text-sm font-semibold text-white/80 mb-1 uppercase tracking-wide">
                 {message.heading}
               </p>
+            )}
+            {message.title && (
+              <h2 className="text-lg font-bold text-white mb-1">{message.title}</h2>
             )}
             {message.meta && (
               <p className="text-xs text-white/60 mb-2">{message.meta}</p>
