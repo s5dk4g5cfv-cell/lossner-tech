@@ -502,11 +502,11 @@ const TerminalResume = () => {
       ? 'bg-emerald-500 text-emerald-950'
       : message.role === 'system'
         ? 'bg-white/5 text-white/80'
-        : 'bg-white/8 text-white/90'
+        : 'bg-white/10 text-white/90 border-l-2 border-l-emerald-500/40'
 
     return (
       <div key={message.id} data-message-id={message.id} className={`flex ${alignment}`}>
-        <div className="max-w-3xl w-full">
+        <div className={isUser ? 'max-w-lg' : 'max-w-3xl w-full'}>
           <div className={`rounded-2xl px-4 py-3 shadow-sm border border-white/10 ${background}`}>
             {message.heading && (
               <p className="text-sm font-semibold text-white/80 mb-1 uppercase tracking-wide">
@@ -517,7 +517,7 @@ const TerminalResume = () => {
               <p className="text-xs text-white/60 mb-2">{message.meta}</p>
             )}
             {message.isMarkdown ? (
-              <div className="prose prose-invert max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-emerald-200 hover:prose-a:text-emerald-100">
+              <div className="prose prose-invert max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-emerald-200 hover:prose-a:text-emerald-100 prose-code:font-mono prose-pre:font-mono">
                 <ReactMarkdown>{message.content}</ReactMarkdown>
               </div>
             ) : (
@@ -530,7 +530,7 @@ const TerminalResume = () => {
   }
 
   const leftNavSections = useMemo(() => sections.filter(section => section.directory || section.action), [sections])
-  const sidebarWidthClasses = isSidebarCollapsed ? 'lg:w-20 xl:w-20 2xl:w-24' : 'lg:w-[23.4vw] xl:w-[20.8vw] 2xl:w-[19.5vw]'
+  const sidebarWidthClasses = isSidebarCollapsed ? 'lg:w-20' : 'lg:w-[280px]'
 
   const navIconFor = (id: string) => SidebarIcons[id as keyof typeof SidebarIcons] ?? SidebarIcons.about
 
@@ -586,9 +586,8 @@ const TerminalResume = () => {
 
   return (
     <div ref={rootRef} className="h-[100dvh] bg-slate-950 text-slate-100 flex overflow-hidden">
-      <aside className={`hidden lg:flex ${sidebarWidthClasses} border-r border-white/10 bg-slate-900/70 backdrop-blur flex-shrink-0`}>
+      <aside className={`hidden lg:flex ${sidebarWidthClasses} border-r border-white/10 bg-gradient-to-b from-slate-900/80 to-slate-950/90 backdrop-blur flex-shrink-0`}>
         <div className="flex h-full w-full flex-col overflow-hidden">
-          {!isSidebarCollapsed && <div className="h-3 border-b border-white/10"></div>}
           <div className="flex-1 flex flex-col overflow-hidden">
             <div className={isSidebarCollapsed ? 'flex-1 overflow-y-auto px-2 py-4 space-y-1' : 'px-2 py-4 space-y-1 flex-none'}>
               {leftNavSections.map(renderDesktopSectionButton)}
@@ -641,8 +640,8 @@ const TerminalResume = () => {
                 <MenuIcon />
               </button>
               <div>
-                <p className="text-xs uppercase tracking-[0.4em] text-white/40">Joshua Lossner</p>
-                <h1 className="text-xl font-semibold tracking-tight">lossner.tech</h1>
+                <h1 className="text-lg font-semibold tracking-tight">Joshua Lossner</h1>
+                <p className="text-xs text-white/40">Software Engineer &middot; lossner.tech</p>
               </div>
             </div>
           </div>

@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-terminal-bg text-terminal-green font-mono;
+    @apply bg-terminal-bg text-terminal-green font-sans;
   }
 }
 
