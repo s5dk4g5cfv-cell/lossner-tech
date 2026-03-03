@@ -14,7 +14,8 @@ module.exports = {
         'terminal-amber': '#ffb000',
       },
       fontFamily: {
-        'mono': ['Courier New', 'monospace'],
+        sans: ['var(--font-inter)', 'Inter', 'system-ui', 'sans-serif'],
+        mono: ['Courier New', 'monospace'],
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
