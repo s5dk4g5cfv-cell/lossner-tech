@@ -669,7 +669,7 @@ const TerminalResume = () => {
                       rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'Alex is thinking…' : 'Ask about Joshua's work, skills, or projects…'}
+                  placeholder={isProcessing ? 'Alex is thinking\u2026' : 'Ask about Joshua\u2019s work, skills, or projects\u2026'}
                   className="flex-1 bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[36px] py-1"
                   rows={1}
                   disabled={isProcessing}
