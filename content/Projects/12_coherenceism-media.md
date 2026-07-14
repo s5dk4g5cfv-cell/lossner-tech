@@ -3,6 +3,7 @@ title: Coherenceism.media
 company: Personal Project
 role: Producer & Developer
 timeline: 2026–Present
+hidden: true
 tags:
 ---
 ## Coherenceism.media

@@ -3,6 +3,7 @@ title: Coherenceism.blog
 company: Personal Project
 role: Producer & Publisher
 timeline: 2024–Present
+hidden: true
 tags:
 ---
 ## Coherenceism.blog

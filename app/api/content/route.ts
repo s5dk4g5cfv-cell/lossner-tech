@@ -111,7 +111,7 @@ async function listDirectoryFiles(directory: string) {
   )
 
   return files
-    .filter(file => directory !== 'Projects' || file.metadata.active === true)
+    .filter(file => directory !== 'Projects' || file.metadata.hidden !== true)
     .sort((a, b) => {
       if (a.order !== b.order) return a.order - b.order
       return a.title.localeCompare(b.title)

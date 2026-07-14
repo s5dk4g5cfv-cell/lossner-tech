@@ -3,7 +3,6 @@ title: CORA — Coherent Operating & Reasoning Architecture
 company: Personal Project
 role: Creator & Operator
 timeline: 2025–Present
-active: true
 tags: [ai, automation, human-ai collaboration]
 ---
 ## CORA — Coherent Operating & Reasoning Architecture

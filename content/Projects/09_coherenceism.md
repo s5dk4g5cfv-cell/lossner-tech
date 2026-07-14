@@ -3,7 +3,6 @@ title: Coherenceism
 company: Personal Project
 role: Founder & Steward
 timeline: 2024–Present
-active: true
 tags: [philosophy, publishing, human-ai collaboration]
 ---
 ## Coherenceism
