@@ -11,9 +11,10 @@ type MazeState = {
   trail: string[]
   score: number
   scouts: number
-  status: 'ready' | 'playing' | 'won' | 'lost'
+  status: 'ready' | 'playing' | 'caught' | 'won' | 'lost'
   direction: Direction
   queuedDirection: Direction | null
+  capturedBy: number | null
   tick: number
 }
 
@@ -40,6 +41,7 @@ const DELTAS: Record<Direction, Point> = {
   left: { x: -1, y: 0 },
   right: { x: 1, y: 0 },
 }
+const DIRECTIONS = Object.keys(DELTAS) as Direction[]
 
 const keyFor = ({ x, y }: Point) => `${x}:${y}`
 const isOpen = ({ x, y }: Point) => MAZE[y]?.[x] !== '#'
@@ -48,6 +50,9 @@ const advance = (point: Point, direction: Direction) => ({
   x: point.x + DELTAS[direction].x,
   y: point.y + DELTAS[direction].y,
 })
+const OPEN_POINTS = MAZE.flatMap((row, y) => Array.from(row).flatMap((cell, x) => (
+  cell === '.' ? [{ x, y }] : []
+)))
 const initialFood = () => {
   const occupiedStarts = new Set([keyFor(ANT_START), ...SPIDER_STARTS.map(keyFor)])
   return MAZE.flatMap((row, y) => Array.from(row).flatMap((cell, x) => {
@@ -65,41 +70,87 @@ const initialState = (): MazeState => ({
   status: 'ready',
   direction: 'right',
   queuedDirection: null,
+  capturedBy: null,
   tick: 0,
 })
 
-const moveSpider = (spider: Point, ant: Point, antDirection: Direction, spiderIndex: number) => {
-  const direction = DELTAS[antDirection]
-  const target = spiderIndex === 0
-    ? ant
-    : { x: ant.x + direction.x * 3, y: ant.y + direction.y * 3 }
-  const choices = (Object.keys(DELTAS) as Direction[])
-    .map(candidateDirection => advance(spider, candidateDirection))
-    .filter(isOpen)
-    .sort((a, b) => {
-      const aDistance = Math.abs(a.x - target.x) + Math.abs(a.y - target.y)
-      const bDistance = Math.abs(b.x - target.x) + Math.abs(b.y - target.y)
-      return aDistance - bDistance
-    })
-  return choices[0] ?? spider
+const distanceBetween = (a: Point, b: Point) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+
+const closestOpenPoint = (target: Point) => {
+  let closest = OPEN_POINTS[0]
+  let closestDistance = distanceBetween(closest, target)
+  for (let index = 1; index < OPEN_POINTS.length; index += 1) {
+    const candidate = OPEN_POINTS[index]
+    const candidateDistance = distanceBetween(candidate, target)
+    if (candidateDistance < closestDistance) {
+      closest = candidate
+      closestDistance = candidateDistance
+    }
+  }
+  return closest
 }
 
-function AntGlyph({ direction, legend = false }: { direction: Direction; legend?: boolean }) {
+// The hunter is quick but greedy: it only chooses the locally closest move.
+const moveHunter = (spider: Point, ant: Point) => {
+  let bestMove = spider
+  let bestDistance = Number.POSITIVE_INFINITY
+  for (const direction of DIRECTIONS) {
+    const candidate = advance(spider, direction)
+    if (!isOpen(candidate)) continue
+    const candidateDistance = distanceBetween(candidate, ant)
+    if (candidateDistance < bestDistance) {
+      bestMove = candidate
+      bestDistance = candidateDistance
+    }
+  }
+  return bestMove
+}
+
+// The stalker is slower, but follows the shortest path to where the ant is heading.
+const moveStalker = (spider: Point, ant: Point, antDirection: Direction, antMoved: boolean) => {
+  const heading = DELTAS[antDirection]
+  const predictedAnt = antMoved
+    ? { x: ant.x + heading.x * 4, y: ant.y + heading.y * 4 }
+    : ant
+  const target = closestOpenPoint(predictedAnt)
+  const queue: Array<{ point: Point; firstStep: Point | null }> = [{ point: spider, firstStep: null }]
+  const visited = new Set([keyFor(spider)])
+
+  while (queue.length > 0) {
+    const current = queue.shift()
+    if (!current) break
+    if (samePoint(current.point, target)) return current.firstStep ?? spider
+
+    for (const direction of DIRECTIONS) {
+      const candidate = advance(current.point, direction)
+      const candidateKey = keyFor(candidate)
+      if (!isOpen(candidate) || visited.has(candidateKey)) continue
+      visited.add(candidateKey)
+      queue.push({ point: candidate, firstStep: current.firstStep ?? candidate })
+    }
+  }
+
+  return spider
+}
+
+function AntGlyph({ direction, legend = false, active = false, caught = false }: { direction: Direction; legend?: boolean; active?: boolean; caught?: boolean }) {
   return (
-    <i className={`maze-ant maze-ant-${direction}${legend ? ' maze-ant-legend' : ''}`} aria-hidden="true">
+    <i className={`maze-ant maze-ant-${direction}${legend ? ' maze-ant-legend' : ''}${active ? ' maze-ant-active' : ''}${caught ? ' maze-ant-caught' : ''}`} aria-hidden="true">
       <span className="maze-ant-head" />
       <span className="maze-ant-legs" />
     </i>
   )
 }
 
-function SpiderGlyph({ stalker = false, legend = false }: { stalker?: boolean; legend?: boolean }) {
+function SpiderGlyph({ stalker = false, legend = false, active = false, capturing = false }: { stalker?: boolean; legend?: boolean; active?: boolean; capturing?: boolean }) {
   return (
-    <i className={`maze-spider${stalker ? ' maze-spider-stalker' : ''}${legend ? ' maze-spider-legend' : ''}`} aria-hidden="true">
+    <i className={`maze-spider${stalker ? ' maze-spider-stalker' : ''}${legend ? ' maze-spider-legend' : ''}${active ? ' maze-spider-active' : ''}${capturing ? ' maze-spider-capturing' : ''}`} aria-hidden="true">
       <span />
     </i>
   )
 }
+
+const actorPosition = ({ x, y }: Point) => ({ transform: `translate(${x * 100}%, ${y * 100}%)` })
 
 interface SignalMazeGameProps { onBack: () => void }
 
@@ -108,7 +159,7 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
 
   const setCourse = useCallback((direction: Direction) => {
     setGame(current => {
-      if (current.status === 'won' || current.status === 'lost') return current
+      if (current.status === 'caught' || current.status === 'won' || current.status === 'lost') return current
       if (current.status === 'ready' && !isOpen(advance(current.ant, direction))) {
         return { ...current, queuedDirection: direction }
       }
@@ -138,33 +189,38 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
           ? [keyFor(current.ant), ...current.trail.filter(point => point !== keyFor(current.ant))].slice(0, 6)
           : current.trail
 
-        // Spiders move at half speed so the hunt stays readable instead of punishing.
-        const spiders = current.tick % 2 === 1
-          ? current.spiders.map((spider, index) => moveSpider(spider, ant, direction, index))
-          : current.spiders
-        const collided = spiders.some(spider => samePoint(spider, ant)) || current.spiders.some((spider, index) => (
+        const spiders = current.spiders.map((spider, index) => {
+          if (index === 0 && current.tick % 2 === 1) return moveHunter(spider, ant)
+          if (index === 1 && current.tick % 4 === 2) return moveStalker(spider, ant, direction, moved)
+          return spider
+        })
+        const directCapture = spiders.findIndex(spider => samePoint(spider, ant))
+        const crossingCapture = current.spiders.findIndex((spider, index) => (
           samePoint(spider, ant) && samePoint(spiders[index], current.ant)
         ))
+        const capturedBy = directCapture >= 0 ? directCapture : crossingCapture
 
         const provision = keyFor(ant)
         const gatheredFood = current.food.includes(provision)
         const food = gatheredFood ? current.food.filter(item => item !== provision) : current.food
         const score = current.score + (gatheredFood ? 10 : 0)
 
-        if (collided) {
+        if (capturedBy >= 0) {
           const scouts = current.scouts - 1
+          const capturePoint = directCapture >= 0 ? ant : spiders[capturedBy]
           return {
             ...current,
-            ant: ANT_START,
-            spiders: SPIDER_STARTS,
+            ant: capturePoint,
+            spiders,
             food,
-            trail: [],
+            trail,
             score,
             scouts,
-            status: scouts <= 0 ? 'lost' : 'ready',
-            direction: 'right',
+            status: 'caught',
+            direction,
             queuedDirection: null,
-            tick: 0,
+            capturedBy,
+            tick: current.tick + 1,
           }
         }
 
@@ -181,9 +237,32 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
           tick: current.tick + 1,
         }
       })
-    }, 170)
+    }, 165)
 
     return () => window.clearInterval(timer)
+  }, [game.status])
+
+  useEffect(() => {
+    if (game.status !== 'caught') return
+
+    const resetTimer = window.setTimeout(() => {
+      setGame(current => {
+        if (current.status !== 'caught') return current
+        return {
+          ...current,
+          ant: ANT_START,
+          spiders: SPIDER_STARTS,
+          trail: [],
+          status: current.scouts <= 0 ? 'lost' : 'ready',
+          direction: 'right',
+          queuedDirection: null,
+          capturedBy: null,
+          tick: 0,
+        }
+      })
+    }, 1050)
+
+    return () => window.clearTimeout(resetTimer)
   }, [game.status])
 
   useEffect(() => {
@@ -218,10 +297,12 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
     ? 'COLONY SUPPLIED.'
     : game.status === 'lost'
       ? 'NO SCOUTS REMAIN. RESTART TO TRY AGAIN.'
+      : game.status === 'caught'
+        ? 'PREDATOR CONTACT. SCOUT SIGNAL COLLAPSING.'
       : game.status === 'ready' && game.scouts < 3
         ? 'SCOUT LOST. CHOOSE A DIRECTION TO RESUME.'
         : game.status === 'ready'
-          ? 'SET A PHEROMONE COURSE. THE SCOUT WILL KEEP MOVING.'
+          ? 'SET A PHEROMONE COURSE. THE HUNTER CHASES. THE STALKER ANTICIPATES.'
           : game.queuedDirection
             ? `PHEROMONE TURN ${game.queuedDirection.toUpperCase()} QUEUED.`
             : 'SCOUT ACTIVE. SPIDERS IN PURSUIT.'
@@ -243,30 +324,39 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
         <div>
           <div className="maze-legend" aria-label="Game legend">
             <span><AntGlyph direction="right" legend /> ANT / YOU</span>
-            <span><SpiderGlyph legend /> SPIDERS / PREDATORS</span>
+            <span><SpiderGlyph legend /> HUNTER / FAST</span>
+            <span><SpiderGlyph stalker legend /> STALKER / SMART</span>
             <span><i className="maze-legend-food" aria-hidden="true" /> FOOD</span>
           </div>
           <div className="maze-grid mt-3 aspect-[17/13] w-full border border-[#80ff96]/30 bg-black/35 p-2" role="img" aria-label={`Colony Protocol game board. ${game.food.length} provisions remain.`}>
-            {MAZE.flatMap((row, y) => Array.from(row).map((cell, x) => {
-              const point = { x, y }
-              const isAnt = samePoint(game.ant, point)
-              const spiderIndex = game.spiders.findIndex(spider => samePoint(spider, point))
-              const pheromoneAge = trailIndex.get(`${x}:${y}`)
-              return (
-                <span key={`${x}:${y}`} className={`maze-cell ${cell === '#' ? 'maze-wall' : ''}`}>
-                  {pheromoneAge !== undefined ? <i className="maze-pheromone" style={{ opacity: Math.max(0.12, 0.48 - pheromoneAge * 0.065) }} aria-hidden="true" /> : null}
-                  {foodSet.has(`${x}:${y}`) && !isAnt && spiderIndex < 0 ? <i className="maze-food" aria-hidden="true" /> : null}
-                  {isAnt ? <AntGlyph direction={game.direction} /> : null}
-                  {spiderIndex >= 0 ? <SpiderGlyph stalker={spiderIndex === 1} /> : null}
+            <div className={`maze-grid-surface${game.status === 'caught' ? ' maze-grid-caught' : ''}`}>
+              {MAZE.flatMap((row, y) => Array.from(row).map((cell, x) => {
+                const point = { x, y }
+                const isAnt = samePoint(game.ant, point)
+                const spiderIndex = game.spiders.findIndex(spider => samePoint(spider, point))
+                const pheromoneAge = trailIndex.get(`${x}:${y}`)
+                return (
+                  <span key={`${x}:${y}`} className={`maze-cell ${cell === '#' ? 'maze-wall' : ''}`}>
+                    {pheromoneAge !== undefined ? <i className="maze-pheromone" style={{ opacity: Math.max(0.12, 0.48 - pheromoneAge * 0.065) }} aria-hidden="true" /> : null}
+                    {foodSet.has(`${x}:${y}`) && !isAnt && spiderIndex < 0 ? <i className="maze-food" aria-hidden="true" /> : null}
+                  </span>
+                )
+              }))}
+              <span className="maze-actor maze-actor-ant" style={actorPosition(game.ant)} aria-hidden="true">
+                <AntGlyph direction={game.direction} active={game.status === 'playing'} caught={game.status === 'caught'} />
+              </span>
+              {game.spiders.map((spider, index) => (
+                <span key={`spider-${index}`} className={`maze-actor ${index === 0 ? 'maze-actor-hunter' : 'maze-actor-stalker'}${game.status === 'caught' && game.capturedBy === index ? ' maze-actor-capturing' : ''}`} style={actorPosition(spider)} aria-hidden="true">
+                  <SpiderGlyph stalker={index === 1} active={game.status === 'playing'} capturing={game.status === 'caught' && game.capturedBy === index} />
                 </span>
-              )
-            }))}
+              ))}
+            </div>
           </div>
         </div>
 
         <div>
           <p className="min-h-14 text-sm leading-7 text-[#80ff96]" aria-live="polite">{statusMessage}</p>
-          <p className="mt-3 text-xs leading-6 text-[#80ff96]/45">PRESS ONCE TO SEND THE SCOUT. CHOOSE ANOTHER DIRECTION TO TURN AT THE NEXT OPEN JUNCTION.</p>
+          <p className="mt-3 text-xs leading-6 text-[#80ff96]/45">PRESS ONCE TO SEND THE SCOUT. THE FAST HUNTER FOLLOWS. THE SLOW STALKER READS AHEAD.</p>
           <div className="mt-6 grid w-36 grid-cols-3 gap-2" aria-label="Set scout direction">
             <span />
             <button type="button" onClick={() => setCourse('up')} className="joshua-terminal-action px-0" aria-label="Send scout up">↑</button>
