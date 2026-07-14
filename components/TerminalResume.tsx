@@ -2,7 +2,10 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
+import dynamic from 'next/dynamic'
 import { SidebarIcons } from './icons'
+
+const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
 
 type MessageRole = 'system' | 'user' | 'ai'
 
@@ -57,6 +60,7 @@ const NAV_CODES: Record<string, string> = {
 }
 
 const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.directory)?.id ?? SECTION_DEFINITIONS[0]?.id ?? null
+const JOSHUA_TRIGGER = /^hello[\s,]+joshua[.!?]?$/i
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
 
@@ -108,6 +112,7 @@ const TerminalResume = () => {
   const [messages, setMessages] = useState<Message[]>([])
   const [currentInput, setCurrentInput] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isJoshuaTerminalOpen, setIsJoshuaTerminalOpen] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
@@ -401,6 +406,12 @@ const TerminalResume = () => {
 
     const userText = currentInput.trim()
     setCurrentInput('')
+
+    if (JOSHUA_TRIGGER.test(userText)) {
+      event.currentTarget.querySelector('textarea')?.blur()
+      setIsJoshuaTerminalOpen(true)
+      return
+    }
 
     const userMessage: Message = {
       id: createId(),
@@ -784,10 +795,13 @@ const TerminalResume = () => {
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
                   onKeyDown={handleInputKeyDown}
-                  onFocus={() => {
+                  onFocus={event => {
+                    const textarea = event.currentTarget
                     // On iOS, scroll the form into view after keyboard appears
                     setTimeout(() => {
-                      rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+                      if (document.activeElement === textarea) {
+                        rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+                      }
                     }, 300)
                   }}
                   placeholder={isProcessing ? 'Tracing an answer\u2026' : 'Ask about the work, the systems, or the person'}
@@ -892,6 +906,10 @@ const TerminalResume = () => {
           </div>
         </div>
       )}
+
+      {isJoshuaTerminalOpen ? (
+        <JoshuaTerminal onClose={() => setIsJoshuaTerminalOpen(false)} />
+      ) : null}
 
       <audio
         ref={audioRef}

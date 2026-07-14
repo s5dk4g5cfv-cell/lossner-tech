@@ -165,9 +165,125 @@
     border-radius: 999px;
   }
 
+  .joshua-terminal {
+    font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
+    letter-spacing: 0.045em;
+    text-shadow: 0 0 8px rgba(128, 255, 150, 0.32);
+    scrollbar-color: rgba(128, 255, 150, 0.28) #020603;
+  }
+
+  .joshua-terminal::before {
+    position: fixed;
+    inset: 0;
+    content: "";
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 50% 40%, rgba(128, 255, 150, 0.045), transparent 52%),
+      linear-gradient(90deg, rgba(255, 189, 102, 0.015), transparent 28%, transparent 72%, rgba(255, 95, 87, 0.015));
+  }
+
+  .joshua-scanlines {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    overflow: hidden;
+    pointer-events: none;
+    opacity: 0.28;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent 0,
+      transparent 3px,
+      rgba(128, 255, 150, 0.055) 4px
+    );
+  }
+
+  .joshua-scanlines::after {
+    position: absolute;
+    top: -18%;
+    right: 0;
+    left: 0;
+    height: 18%;
+    content: "";
+    background: linear-gradient(to bottom, transparent, rgba(128, 255, 150, 0.075), transparent);
+    animation: joshua-scan 7s linear infinite;
+  }
+
+  .joshua-terminal-panel {
+    animation: terminal-arrive 420ms steps(4, end) both;
+  }
+
+  .joshua-terminal-kicker {
+    font-size: 0.65rem;
+    line-height: 1rem;
+    letter-spacing: 0.28em;
+    color: rgba(128, 255, 150, 0.48);
+  }
+
+  .joshua-terminal-option {
+    display: flex;
+    min-height: 4rem;
+    align-items: center;
+    gap: 1rem;
+    border: 1px solid rgba(128, 255, 150, 0.25);
+    background: rgba(128, 255, 150, 0.025);
+    padding: 1rem 1.1rem;
+    text-align: left;
+    font-size: 0.78rem;
+    line-height: 1.25rem;
+    letter-spacing: 0.12em;
+    color: rgba(128, 255, 150, 0.78);
+    transition: 160ms ease;
+  }
+
+  .joshua-terminal-option:hover {
+    border-color: rgba(128, 255, 150, 0.7);
+    background: rgba(128, 255, 150, 0.075);
+    color: #80ff96;
+    box-shadow: inset 3px 0 0 rgba(255, 189, 102, 0.9);
+  }
+
+  .joshua-terminal-action {
+    border: 1px solid rgba(128, 255, 150, 0.24);
+    background: rgba(128, 255, 150, 0.025);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.64rem;
+    line-height: 1rem;
+    letter-spacing: 0.18em;
+    color: rgba(128, 255, 150, 0.68);
+    transition: 160ms ease;
+  }
+
+  .joshua-terminal-action:hover {
+    border-color: rgba(128, 255, 150, 0.72);
+    background: rgba(128, 255, 150, 0.08);
+    color: #80ff96;
+  }
+
+  .joshua-cursor {
+    box-shadow: 0 0 10px rgba(128, 255, 150, 0.6);
+    animation: cursor-blink 860ms steps(1, end) infinite;
+  }
+
   @keyframes signal-breathe {
     0%, 100% { opacity: 0.72; transform: scale(0.9); }
     50% { opacity: 1; transform: scale(1); }
+  }
+
+  @keyframes joshua-scan {
+    from { transform: translateY(0); }
+    to { transform: translateY(660%); }
+  }
+
+  @keyframes cursor-blink {
+    0%, 48% { opacity: 1; }
+    49%, 100% { opacity: 0; }
+  }
+
+  @keyframes terminal-arrive {
+    0% { opacity: 0; transform: translateY(4px); filter: blur(1px); }
+    35% { opacity: 0.75; }
+    55% { opacity: 0.35; }
+    100% { opacity: 1; transform: translateY(0); filter: blur(0); }
   }
 
   @media (max-width: 640px) {
