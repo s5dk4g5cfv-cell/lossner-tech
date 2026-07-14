@@ -541,7 +541,7 @@ const TerminalResume = () => {
               <span>Des Moines, IA</span>
             </div>
 
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.32em] text-[#ffb454]">Software engineer · systems architect</p>
+            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.32em] text-[#ffb454]">DevOps engineer · automation builder</p>
             <h2 className="max-w-4xl text-[clamp(2.65rem,7vw,6.4rem)] font-semibold leading-[0.9] tracking-[-0.075em] text-white">
               I engineer<br />
               <span className="bg-gradient-to-r from-[#66e3ff] via-[#d8f8ff] to-[#9d8cff] bg-clip-text text-transparent">coherent systems.</span>
@@ -753,7 +753,7 @@ const TerminalResume = () => {
                   <div className="flex items-center gap-2">
                     <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#66e3ff]">SYS</span>
                     <span className="text-white/15">/</span>
-                    <h1 className="text-sm font-semibold tracking-tight text-white sm:text-base">JOSHUA_LOSSNER</h1>
+                    <h1 className="text-sm font-semibold tracking-tight text-white sm:text-base">PORTFOLIO</h1>
                   </div>
                   <p className="mt-0.5 hidden font-mono text-[9px] uppercase tracking-[0.16em] text-white/30 sm:block">Engineering clarity from complexity</p>
                 </div>
