@@ -2,56 +2,201 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  color-scheme: dark;
+  --void: #05070d;
+  --deep: #080c14;
+  --panel: #0d1420;
+  --panel-bright: #121c2b;
+  --ice: #e8edf5;
+  --mist: #8b9aaf;
+  --cyan: #66e3ff;
+  --amber: #ffb454;
+  --violet: #9d8cff;
+}
+
 @layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    background: var(--void);
+  }
+
   body {
-    @apply bg-terminal-bg text-terminal-green font-sans;
+    min-height: 100vh;
+    margin: 0;
+    background: var(--void);
+    color: var(--ice);
+    font-family: var(--font-inter), Inter, system-ui, sans-serif;
+    font-feature-settings: "ss01" 1, "cv05" 1;
+  }
+
+  ::selection {
+    background: rgba(102, 227, 255, 0.24);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--amber);
+    outline-offset: 3px;
   }
 }
 
 @layer utilities {
-  .scanline {
+  .interface-shell {
     position: relative;
-    overflow: hidden;
-  }
-  
-  .scanline::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: rgba(0, 255, 0, 0.1);
-    animation: scanline 6s linear infinite;
-  }
-  
-  @keyframes scanline {
-    0% { transform: translateY(0); }
-    100% { transform: translateY(100vh); }
-  }
-  
-  .terminal-glow {
-    text-shadow: 0 0 5px rgba(0, 255, 0, 0.5);
-  }
-  
-  .crt-effect {
-    animation: textShadow 1.6s infinite;
-  }
-  
-  @keyframes textShadow {
-    0% { text-shadow: 0.4389924193300864px 0 1px rgba(0,30,255,0.5), -0.4389924193300864px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
-    5% { text-shadow: 2.7928974010788217px 0 1px rgba(0,30,255,0.5), -2.7928974010788217px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
-    10% { text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
-    100% { text-shadow: 0.02956275843481219px 0 1px rgba(0,30,255,0.5), -0.02956275843481219px 0 1px rgba(255,0,80,0.3), 0 0 3px; }
-  }
-  
-  .scrollbar-hide {
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+    isolation: isolate;
+    background:
+      radial-gradient(circle at 78% 4%, rgba(102, 227, 255, 0.09), transparent 27rem),
+      radial-gradient(circle at 34% 100%, rgba(157, 140, 255, 0.07), transparent 34rem),
+      var(--void);
   }
 
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
+  .interface-shell::before {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    content: "";
+    pointer-events: none;
+    opacity: 0.42;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: linear-gradient(to bottom, black, transparent 82%);
+  }
+
+  .glass-panel {
+    background: linear-gradient(145deg, rgba(18, 28, 43, 0.88), rgba(8, 12, 20, 0.78));
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow:
+      0 24px 80px rgba(0, 0, 0, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  }
+
+  .hero-orbit {
+    position: absolute;
+    right: -5.5rem;
+    top: -7rem;
+    width: 24rem;
+    height: 24rem;
+    border: 1px solid rgba(102, 227, 255, 0.12);
+    border-radius: 999px;
+    pointer-events: none;
+  }
+
+  .hero-orbit::before,
+  .hero-orbit::after {
+    position: absolute;
+    content: "";
+    border-radius: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .hero-orbit::before {
+    inset: 3.25rem;
+  }
+
+  .hero-orbit::after {
+    inset: 7rem;
+    border-color: rgba(255, 180, 84, 0.2);
+  }
+
+  .signal-dot {
+    box-shadow: 0 0 0 4px rgba(102, 227, 255, 0.08), 0 0 20px rgba(102, 227, 255, 0.6);
+    animation: signal-breathe 2.8s ease-in-out infinite;
+  }
+
+  .signal-spine {
+    position: relative;
+    padding-left: 2rem;
+  }
+
+  .signal-spine::before {
+    position: absolute;
+    top: 0.85rem;
+    bottom: -1.5rem;
+    left: 0.42rem;
+    width: 1px;
+    content: "";
+    background: linear-gradient(to bottom, rgba(102, 227, 255, 0.68), rgba(157, 140, 255, 0.12));
+  }
+
+  .signal-spine::after {
+    position: absolute;
+    top: 0.72rem;
+    left: 0.18rem;
+    width: 0.55rem;
+    height: 0.55rem;
+    content: "";
+    border: 1px solid rgba(102, 227, 255, 0.88);
+    border-radius: 999px;
+    background: var(--deep);
+    box-shadow: 0 0 14px rgba(102, 227, 255, 0.42);
+  }
+
+  .record-card {
+    background: linear-gradient(150deg, rgba(18, 28, 43, 0.94), rgba(9, 14, 23, 0.93));
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 20px 65px rgba(0, 0, 0, 0.22);
+  }
+
+  .record-card::before {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 2px;
+    content: "";
+    background: linear-gradient(to bottom, var(--cyan), rgba(157, 140, 255, 0.35), transparent 78%);
+  }
+
+  .fine-scrollbar {
+    scrollbar-color: rgba(102, 227, 255, 0.2) transparent;
+    scrollbar-width: thin;
+  }
+
+  .fine-scrollbar::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  .fine-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(102, 227, 255, 0.18);
+    border-radius: 999px;
+  }
+
+  @keyframes signal-breathe {
+    0%, 100% { opacity: 0.72; transform: scale(0.9); }
+    50% { opacity: 1; transform: scale(1); }
+  }
+
+  @media (max-width: 640px) {
+    .signal-spine {
+      padding-left: 1.15rem;
+    }
+
+    .signal-spine::before {
+      left: 0.15rem;
+    }
+
+    .signal-spine::after {
+      left: -0.1rem;
+    }
+
+    .hero-orbit {
+      right: -12rem;
+      top: -9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 }
