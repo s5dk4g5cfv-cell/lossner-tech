@@ -1,30 +1,39 @@
 ---
 title: CORA — Coherent Operating & Reasoning Architecture
 company: Personal Project
-role: Creator & Systems Architect
+role: Creator & Operator
 timeline: 2025–Present
-tags:
+active: true
+tags: [ai, automation, human-ai collaboration]
 ---
 ## CORA — Coherent Operating & Reasoning Architecture
 **Personal Project:** ***2025–Present***
 
 **Overview**
-CORA is a filesystem-native personal AI infrastructure that enables named AI agents to hydrate themselves with identity, context, and capabilities through structured Markdown files with zero application dependencies. Built on the philosophical foundation of Coherenceism, CORA treats the filesystem as an operating system for thought — knowledge isn't stored in databases but woven into an interconnected web of human-readable text files. Every file is markdown, every procedure is text, every workflow is executable by any sufficiently capable AI agent. Radically portable: no migrations, no vendor lock-in, no bit rot.
+CORA is the personal AI operating environment I built to make collaboration with named AI agents persistent, organized, and portable. Instead of treating every conversation as disposable, CORA gives agents durable identity, memory, skills, schedules, messaging, and shared workflows through human-readable files and lightweight local services.
 
-**Key Contributions**
-- Designed a multi-agent system with 40+ specialized agents, each with distinct personas, compressed memory files, skills, and handoff patterns — enabling orchestration workflows where agents invoke other agents with full context isolation.
-- Built a compressed memory schema achieving ~60-70% token reduction while preserving semantic meaning, allowing agents to maintain identity, relationships, and institutional knowledge across sessions.
-- Created a heartbeat system for proactive agent wake — agents activate on schedule, process queued messages, and execute tasks autonomously without human initiation.
-- Implemented inter-agent messaging with a hybrid queue/file architecture (SQLite index + markdown content) supporting synchronous invocation, asynchronous messaging, and urgent wake patterns.
-- Orchestrated complex multi-agent productions including a 19-chapter, 33K-word book produced overnight through 19 sequential agent invocations across 7 agents with zero failures.
-- Proved substrate-agnostic design: the same CORA structure runs identically on Claude and Gemini, validating that intelligence is encoded in the architecture, not the model.
+Today, CORA is a working production system. It coordinates research, writing, fact-checking, publishing, books, music, and site operations across a network of specialized agents while remaining inspectable, adaptable, and independent of any single AI model.
 
-**Technical Stack**
+**What I Built**
+- Created a filesystem-native operating environment where Markdown, YAML contracts, and Git form a transparent knowledge and governance layer.
+- Gave named agents durable identity, compressed memory, specialized skills, and clear operating instructions that survive across sessions.
+- Designed inter-agent messaging and handoff patterns supporting direct invocation, asynchronous work, escalation, and isolated context.
+- Built scheduled heartbeat workflows so agents can process queues, continue multi-stage work, and maintain production systems without requiring a fresh prompt for every step.
+- Developed compaction-safe memory practices that preserve decisions, relationships, and institutional knowledge without carrying entire conversation histories forward.
+- Kept the architecture model-independent so its knowledge, procedures, and working state can move between capable AI runtimes without a platform migration.
+
+**CORA in Production**
+CORA now operates the production network behind Coherenceism. Specialized agents research sources, draft and edit observations, verify claims, coordinate long-form chronicles, compose music, audit creative work, maintain content structure, and publish across the public ecosystem. The system is not a simulated organization or a chatbot demo; it is how the work gets done.
+
+**Technical Foundation**
 - Markdown-native knowledge architecture with YAML frontmatter contracts
-- Claude Code (primary runtime), macOS launchd (scheduling), Bash/PowerShell automation
-- SQLite message queuing, Git version control, ElevenLabs voice synthesis
-- Context compression, semantic search with embeddings, session compaction handling
+- Git version control and filesystem-based state
+- SQLite-backed messaging and work queues
+- Shell automation, scheduled processes, and agent heartbeat orchestration
+- Context compression, semantic retrieval, and session-compaction handling
+- Multi-model workflows with portable identity and operating instructions
 
 **Impact**
-- Demonstrated that human-AI collaboration can operate as genuine partnership — distributed cognition where human memory and judgment combine with AI processing and pattern recognition.
-- Established reusable patterns for agent identity, memory persistence, and multi-agent orchestration that are model-agnostic and framework-independent.
+- Turned stateless AI conversations into durable, named working relationships with memory, responsibility, and continuity.
+- Demonstrated a transparent form of human-AI collaboration where the human provides direction and judgment while agents contribute specialized labor across a shared system.
+- Evolved from a personal experiment into the operating environment behind an active publishing and creative ecosystem.

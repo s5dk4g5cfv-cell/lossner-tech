@@ -41,7 +41,7 @@ type SectionState = SectionDefinition & {
 const SECTION_DEFINITIONS: SectionDefinition[] = [
   { id: 'experience', label: 'Experience', directory: 'Experience' },
   { id: 'skills', label: 'Skills', directory: 'Skills' },
-  { id: 'projects', label: 'Projects', directory: 'Projects' },
+  { id: 'projects', label: 'Projects / Active', directory: 'Projects' },
   { id: 'education', label: 'Education', directory: 'Education' },
   { id: 'journal', label: 'Journal', directory: 'Journal' },
   { id: 'about', label: 'About', directory: 'About', action: 'about' },
@@ -245,6 +245,7 @@ const TerminalResume = () => {
       const m = item.metadata ?? {}
       const metaParts = [
         m.company,
+        m.role,
         m.period || m.timeline || (m.start ? `${m.start} – ${m.end || 'Present'}` : null),
         m.status
       ].filter(Boolean)
