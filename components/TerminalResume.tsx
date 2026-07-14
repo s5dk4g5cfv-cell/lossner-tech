@@ -3,7 +3,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import dynamic from 'next/dynamic'
-import { SidebarIcons } from './icons'
 
 const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
 
@@ -107,7 +106,6 @@ const TerminalResume = () => {
     }))
   )
   const [selectedSectionId, setSelectedSectionId] = useState<SectionDefinition['id'] | null>(INITIAL_SELECTED_SECTION_ID)
-  const isSidebarCollapsed = false
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [currentInput, setCurrentInput] = useState('')
@@ -528,10 +526,6 @@ const TerminalResume = () => {
     }
   }
 
-  const toggleAudio = () => {
-    setAudioEnabled(prev => !prev)
-  }
-
   const renderMessage = (message: Message) => {
     const isUser = message.role === 'user'
 
@@ -540,63 +534,45 @@ const TerminalResume = () => {
       const aboutSection = sections.find(section => section.id === 'about')
 
       return (
-        <section key={message.id} data-message-id={message.id} className="relative overflow-hidden rounded-[28px] glass-panel px-6 py-8 sm:px-10 sm:py-12 lg:px-14 lg:py-14">
-          <div className="hero-orbit" aria-hidden="true" />
-          <div className="relative z-10 max-w-4xl">
-            <div className="mb-7 flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.24em] text-[#8b9aaf]">
-              <span className="flex items-center gap-2 text-[#66e3ff]">
-                <span className="signal-dot h-1.5 w-1.5 rounded-full bg-[#66e3ff]" />
-                Available for ambitious systems
-              </span>
-              <span className="text-white/20">{'//'}</span>
-              <span>Des Moines, IA</span>
+        <section key={message.id} data-message-id={message.id} className="terminal-hero">
+          <div className="terminal-hero-grid" aria-hidden="true" />
+          <div className="relative z-10 max-w-5xl">
+            <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[9px] uppercase tracking-[0.24em] text-[#80ff96]/45">
+              <span className="flex items-center gap-2 text-[#80ff96]"><span className="terminal-status-light" /> LINK ESTABLISHED</span>
+              <span>NODE: DES MOINES / IA</span>
+              <span>ACCESS: PUBLIC</span>
             </div>
-
-            <p className="mb-4 font-mono text-[11px] uppercase tracking-[0.32em] text-[#ffb454]">DevOps engineer · automation builder</p>
-            <h2 className="max-w-4xl text-[clamp(2.65rem,7vw,6.4rem)] font-semibold leading-[0.9] tracking-[-0.075em] text-white">
-              I engineer<br />
-              <span className="bg-gradient-to-r from-[#66e3ff] via-[#d8f8ff] to-[#9d8cff] bg-clip-text text-transparent">coherent systems.</span>
-            </h2>
-            <p className="mt-7 max-w-2xl text-base leading-7 text-[#a8b5c7] sm:text-lg sm:leading-8">
-              {message.content}
-            </p>
-
-            <div className="mt-9 flex flex-wrap gap-3">
+            <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-[#ffbd66]">PERSONAL DATA SYSTEM / ONLINE</p>
+            <h2 className="terminal-hero-title">GREETINGS.</h2>
+            <p className="mt-7 max-w-3xl text-sm uppercase leading-7 tracking-[0.06em] text-[#80ff96]/72 sm:text-base sm:leading-8">{message.content}</p>
+            <div className="mt-9 flex flex-wrap gap-2">
               {projectsSection && (
                 <button
                   type="button"
                   onClick={async () => {
                     await handleSectionSelect(projectsSection)
-                    if (window.innerWidth < 1024) {
-                      setIsMobileNavOpen(true)
-                    }
+                    if (window.innerWidth < 1024) setIsMobileNavOpen(true)
                   }}
-                  className="group inline-flex items-center gap-3 rounded-full bg-[#e8edf5] px-5 py-3 text-sm font-semibold text-[#05070d] transition hover:bg-[#66e3ff]"
+                  className="terminal-primary-action"
                 >
-                  Explore selected work
-                  <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">↗</span>
+                  [ ACCESS PROJECT FILES ]
                 </button>
               )}
               {aboutSection && (
-                <button
-                  type="button"
-                  onClick={() => handleSectionSelect(aboutSection)}
-                  className="inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-medium text-white/80 transition hover:border-[#66e3ff]/60 hover:text-[#66e3ff]"
-                >
-                  The human behind it
+                <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
+                  [ IDENTIFY OPERATOR ]
                 </button>
               )}
             </div>
-
-            <div className="mt-12 grid max-w-2xl grid-cols-1 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.08] sm:grid-cols-3">
+            <div className="mt-12 grid max-w-3xl border-l border-t border-[#80ff96]/20 sm:grid-cols-3">
               {[
-                ['18+', 'Years in technology'],
-                ['18K+', 'Annual deployments'],
-                ['40+', 'AI agents orchestrated'],
+                ['18+', 'YEARS / TECHNOLOGY'],
+                ['18K+', 'DEPLOYMENTS / YEAR'],
+                ['40+', 'AI AGENTS / ORCHESTRATED'],
               ].map(([value, label]) => (
-                <div key={label} className="bg-[#0a1019]/90 px-5 py-4">
-                  <p className="text-xl font-semibold tracking-tight text-white">{value}</p>
-                  <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-[#77869a]">{label}</p>
+                <div key={label} className="border-b border-r border-[#80ff96]/20 bg-[#80ff96]/[0.025] px-5 py-4">
+                  <p className="text-xl text-[#ffbd66]">{value}</p>
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/42">{label}</p>
                 </div>
               ))}
             </div>
@@ -606,29 +582,16 @@ const TerminalResume = () => {
     }
 
     return (
-      <div key={message.id} data-message-id={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start signal-spine'}`}>
-        <div className={isUser ? 'max-w-xl' : 'max-w-4xl w-full'}>
-          <article className={isUser
-            ? 'rounded-[20px] rounded-br-md bg-[#66e3ff] px-5 py-3 text-[#071017] shadow-[0_12px_35px_rgba(102,227,255,0.12)]'
-            : 'record-card relative overflow-hidden rounded-[22px] px-5 py-5 sm:px-7 sm:py-7 text-white/90'}>
-            {message.heading && (
-              <p className="mb-3 flex items-center gap-3 font-mono text-[10px] uppercase tracking-[0.26em] text-[#66e3ff]">
-                <span>{message.heading}</span>
-                <span className="h-px w-8 bg-[#66e3ff]/30" />
-              </p>
-            )}
-            {message.title && (
-              <h2 className="mb-2 max-w-3xl text-xl font-semibold leading-tight tracking-[-0.03em] text-white sm:text-2xl">{message.title}</h2>
-            )}
-            {message.meta && (
-              <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#ffb454]">{message.meta}</p>
-            )}
+      <div key={message.id} data-message-id={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div className={isUser ? 'max-w-2xl' : 'w-full max-w-5xl'}>
+          <article className={isUser ? 'terminal-user-message' : 'terminal-record'}>
+            {message.heading && <p className="mb-3 text-[9px] uppercase tracking-[0.26em] text-[#ffbd66]">{'>'} DIRECTORY / {message.heading}</p>}
+            {message.title && <h2 className="mb-2 max-w-3xl text-xl uppercase leading-tight tracking-[0.04em] text-[#80ff96] sm:text-2xl">{message.title}</h2>}
+            {message.meta && <p className="mb-5 text-[9px] uppercase tracking-[0.16em] text-[#80ff96]/42">{message.meta}</p>}
             {message.isMarkdown ? (
-              <div className="prose prose-invert max-w-none prose-p:text-[#b3bfd0] prose-p:leading-7 prose-headings:text-white prose-strong:text-white prose-strong:font-semibold prose-a:text-[#66e3ff] hover:prose-a:text-white prose-li:text-[#b3bfd0] prose-li:marker:text-[#66e3ff]/60 prose-code:font-mono prose-pre:font-mono">
-                <ReactMarkdown>{message.content}</ReactMarkdown>
-              </div>
+              <div className="prose terminal-prose max-w-none"><ReactMarkdown>{message.content}</ReactMarkdown></div>
             ) : (
-              <p className="whitespace-pre-line text-sm leading-6">{message.content}</p>
+              <p className="whitespace-pre-line text-sm uppercase leading-6 tracking-[0.04em]">{message.content}</p>
             )}
           </article>
         </div>
@@ -637,193 +600,125 @@ const TerminalResume = () => {
   }
 
   const leftNavSections = useMemo(() => sections.filter(section => section.directory || section.action), [sections])
-  const sidebarWidthClasses = isSidebarCollapsed ? 'lg:w-20' : 'lg:w-[280px]'
-
-  const navIconFor = (id: string) => SidebarIcons[id as keyof typeof SidebarIcons] ?? SidebarIcons.about
 
   const renderDesktopSectionButton = (section: SectionState) => {
     const isSelected = selectedSectionId === section.id
-    const icon = navIconFor(section.id)
 
     return (
       <button
         key={section.id}
         type="button"
-        title={isSidebarCollapsed ? section.label : undefined}
         onClick={() => handleSectionSelect(section)}
         aria-current={isSelected ? 'page' : undefined}
-        className={`group relative w-full rounded-xl border transition px-3 py-2.5 text-left flex items-center ${
-          isSidebarCollapsed ? 'justify-center' : 'gap-3'
-        } ${
-          isSelected
-            ? 'bg-[#66e3ff]/[0.09] border-[#66e3ff]/35 text-white'
-            : 'bg-transparent border-transparent text-[#8897aa] hover:border-white/10 hover:bg-white/[0.035] hover:text-white'
-        }`}
+        className={`terminal-nav-item ${isSelected ? 'terminal-nav-item-active' : ''}`}
       >
-        {!isSidebarCollapsed && (
-          <span className={`w-5 font-mono text-[9px] tracking-wider ${isSelected ? 'text-[#66e3ff]' : 'text-white/25 group-hover:text-white/45'}`}>
-            {NAV_CODES[section.id]}
-          </span>
-        )}
-        <span className={`flex h-5 w-5 items-center justify-center ${isSelected ? 'text-[#66e3ff]' : 'text-white/35 group-hover:text-white/65'}`}>{icon}</span>
-        {!isSidebarCollapsed && (
-          <span className="text-sm font-medium leading-tight">{section.label}</span>
-        )}
-        {!isSidebarCollapsed && isSelected && (
-          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#66e3ff] shadow-[0_0_12px_rgba(102,227,255,0.75)]" aria-hidden="true" />
-        )}
+        <span className={isSelected ? 'text-[#ffbd66]' : 'text-[#80ff96]/32'}>{NAV_CODES[section.id]}</span>
+        <span>{section.label.toUpperCase()}</span>
+        <span className="ml-auto opacity-30">{isSelected ? '◼' : '>'}</span>
       </button>
     )
   }
 
-  return (
-    <div ref={rootRef} className="interface-shell h-[100dvh] text-[#e8edf5] flex overflow-hidden">
-      <aside className={`hidden lg:flex ${sidebarWidthClasses} border-r border-white/[0.07] bg-[#080c14]/90 backdrop-blur-xl flex-shrink-0`}>
-        <div className="flex h-full w-full flex-col overflow-hidden">
-          {!isSidebarCollapsed && (
-            <div className="border-b border-white/[0.07] px-5 py-5">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-[#66e3ff]/25 bg-[#66e3ff]/[0.06] font-mono text-sm font-semibold text-[#66e3ff] shadow-[inset_0_0_20px_rgba(102,227,255,0.04)]">
-                  JL
-                </div>
-                <div>
-                  <p className="text-sm font-semibold tracking-tight text-white">Joshua Lossner</p>
-                  <p className="mt-0.5 font-mono text-[9px] uppercase tracking-[0.18em] text-[#667489]">Systems interface</p>
-                </div>
-              </div>
-            </div>
-          )}
-          <div className="flex-1 flex flex-col overflow-hidden">
-            {!isSidebarCollapsed && <p className="px-5 pt-5 pb-2 font-mono text-[9px] uppercase tracking-[0.28em] text-white/25">Index / 07</p>}
-            <div className={isSidebarCollapsed ? 'flex-1 overflow-y-auto px-2 py-4 space-y-1' : 'px-2 pb-4 space-y-1 flex-none'}>
-              {leftNavSections.map(renderDesktopSectionButton)}
-            </div>
+  const renderRecordButton = (item: ContentItem) => selectedSection ? (
+    <button
+      key={item.id}
+      type="button"
+      onClick={() => handleItemSelect(selectedSection, item)}
+      className="group w-full border-l border-transparent px-3 py-2.5 text-left text-[#80ff96]/58 transition hover:border-[#ffbd66] hover:bg-[#80ff96]/[0.04] hover:text-[#80ff96]"
+      disabled={isProcessing}
+    >
+      <span className="flex items-start gap-2 text-[11px] uppercase leading-snug tracking-[0.04em]"><span className="mt-px text-[#ffbd66]/45">&gt;</span>{item.title}</span>
+      {item.metadata?.period && <span className="ml-4 mt-1 block text-[8px] uppercase tracking-wider text-[#80ff96]/25">{item.metadata.period}</span>}
+    </button>
+  ) : null
 
-            {!isSidebarCollapsed && selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="fine-scrollbar flex-1 overflow-y-auto border-t border-white/[0.07] pt-4">
+  return (
+    <div ref={rootRef} className="wargames-shell flex h-[100dvh] overflow-hidden text-[#80ff96]">
+      <div className="wargames-scanlines" aria-hidden="true" />
+      <aside className="relative z-10 hidden w-[286px] flex-shrink-0 border-r border-[#80ff96]/20 bg-[#030805]/95 lg:flex">
+        <div className="flex h-full w-full flex-col overflow-hidden">
+          <div className="border-b border-[#80ff96]/20 px-5 py-5">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[#ffbd66]">COMMAND DIRECTORY</p>
+            <p className="mt-2 text-[9px] tracking-[0.12em] text-[#80ff96]/38">SELECT DATA CLASS</p>
+          </div>
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <p className="px-5 pb-2 pt-5 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <div className="flex-none space-y-1 px-2 pb-4">{leftNavSections.map(renderDesktopSectionButton)}</div>
+            {selectedSection?.directory && selectedSection.action !== 'about' && (
+              <div className="fine-scrollbar flex-1 overflow-y-auto border-t border-[#80ff96]/15 pt-4">
                 <div className="flex items-center justify-between px-5 pb-2">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-white/25">Records</p>
-                  <span className="font-mono text-[9px] text-white/20">{String(selectedSection.items.length).padStart(2, '0')}</span>
+                  <p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p>
+                  <span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span>
                 </div>
                 <div className="space-y-1 px-2 pb-4">
-                  {selectedSection.loading && (
-                    <p className="text-xs text-white/40 px-2 py-2">Loading…</p>
-                  )}
-                  {selectedSection.error && (
-                    <p className="text-xs text-red-300 px-2 py-2">{selectedSection.error}</p>
-                  )}
-                  {selectedSection.items.map(item => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleItemSelect(selectedSection, item)}
-                      className="group w-full text-left rounded-xl px-3 py-2.5 text-xs text-white/70 hover:text-white hover:bg-white/[0.04] border border-transparent hover:border-white/[0.07] transition"
-                      disabled={isProcessing}
-                    >
-                      <span className="flex items-start gap-2 text-[13px] font-medium leading-snug text-white/78 group-hover:text-white">
-                        <span className="mt-1 text-[9px] text-[#66e3ff]/40 group-hover:text-[#66e3ff]">↗</span>
-                        {item.title}
-                      </span>
-                      {item.metadata?.period && (
-                        <span className="ml-4 mt-1 block font-mono text-[9px] uppercase tracking-wider text-white/25">{item.metadata.period}</span>
-                      )}
-                    </button>
-                  ))}
-                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && (
-                    <p className="text-xs text-white/40 px-2 py-2">No entries yet.</p>
-                  )}
+                  {selectedSection.loading && <p className="px-3 py-2 text-[10px] text-[#80ff96]/40">READING DIRECTORY…</p>}
+                  {selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#ff5f57]">{selectedSection.error}</p>}
+                  {selectedSection.items.map(renderRecordButton)}
+                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#80ff96]/35">NO RECORDS</p>}
                 </div>
               </div>
             )}
           </div>
-          {!isSidebarCollapsed && (
-            <div className="border-t border-white/[0.07] px-5 py-4 font-mono text-[9px] uppercase tracking-[0.18em] text-white/25">
-              <div className="flex items-center justify-between">
-                <span>Signal</span>
-                <span className="flex items-center gap-2 text-[#66e3ff]/80"><span className="h-1.5 w-1.5 rounded-full bg-[#66e3ff]" /> online</span>
-              </div>
-            </div>
-          )}
+          <div className="border-t border-[#80ff96]/15 px-5 py-4 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/28">
+            <div className="flex items-center justify-between"><span>CARRIER</span><span className="flex items-center gap-2 text-[#80ff96]/75"><span className="terminal-status-light" /> ONLINE</span></div>
+          </div>
         </div>
       </aside>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-40 border-b border-white/[0.07] bg-[#05070d]/80 backdrop-blur-xl">
+      <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 border-b border-[#80ff96]/20 bg-[#020603]/94">
           <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setIsMobileNavOpen(true)}
-                  className="lg:hidden rounded-xl border border-white/10 p-2.5 text-white/60 hover:border-[#66e3ff]/50 hover:text-[#66e3ff] transition"
-                  aria-label="Open navigation"
-                >
-                  <MenuIcon />
-                </button>
+                <button type="button" onClick={() => setIsMobileNavOpen(true)} className="border border-[#80ff96]/25 p-2 text-[#80ff96]/60 transition hover:border-[#80ff96] hover:text-[#80ff96] lg:hidden" aria-label="Open navigation"><MenuIcon /></button>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#66e3ff]">SYS</span>
-                    <span className="text-white/15">/</span>
-                    <h1 className="text-sm font-semibold tracking-tight text-white sm:text-base">PORTFOLIO</h1>
+                    <span className="text-[9px] uppercase tracking-[0.22em] text-[#ffbd66]">JOSHUA LOSSNER</span>
+                    <span className="text-[#80ff96]/18">{'//'}</span>
+                    <h1 className="text-[10px] uppercase tracking-[0.16em] text-[#80ff96] sm:text-xs">PERSONAL DATA SYSTEM</h1>
                   </div>
-                  <p className="mt-0.5 hidden font-mono text-[9px] uppercase tracking-[0.16em] text-white/30 sm:block">Engineering clarity from complexity</p>
+                  <p className="mt-1 hidden text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/28 sm:block">DEVOPS / AUTOMATION / HUMAN-AI SYSTEMS</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.16em] text-white/30">
-                <span className="hidden sm:inline">Portfolio OS · v1.1</span>
-                <span className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[#66e3ff]/80">
-                  <span className="signal-dot h-1.5 w-1.5 rounded-full bg-[#66e3ff]" /> Live
-                </span>
+              <div className="flex items-center gap-3 text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/30">
+                <span className="hidden sm:inline">SESSION 83-A</span>
+                <span className="flex items-center gap-2 border border-[#80ff96]/15 px-3 py-1.5 text-[#80ff96]/72"><span className="terminal-status-light" /> ONLINE</span>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col overflow-hidden">
+        <main className="flex flex-1 flex-col overflow-hidden">
           <div ref={chatScrollRef} className="fine-scrollbar flex-1 overflow-y-auto">
-            <div className="px-[clamp(16px,4vw,64px)] py-5 lg:py-9 space-y-6 max-w-[1320px] mx-auto w-full">
-              {messages.map(renderMessage)}
-              <div ref={messagesEndRef} />
-            </div>
+            <div className="mx-auto w-full max-w-[1320px] space-y-6 px-[clamp(16px,4vw,64px)] py-5 lg:py-9">{messages.map(renderMessage)}<div ref={messagesEndRef} /></div>
           </div>
-
-          <form onSubmit={handleSubmit} className="flex-none border-t border-white/[0.07] bg-[#05070d]/88 backdrop-blur-xl">
-            <div className="px-[clamp(16px,4vw,64px)] py-3 max-w-[1320px] mx-auto w-full">
-              <div className="group rounded-[18px] border border-white/[0.1] bg-[#0d1420]/90 pl-4 pr-2.5 py-2.5 focus-within:border-[#66e3ff]/55 focus-within:shadow-[0_0_0_3px_rgba(102,227,255,0.05)] transition flex items-end gap-3">
-                <span className="mb-2 hidden font-mono text-[11px] text-[#66e3ff]/60 sm:block" aria-hidden="true">~/ask</span>
+          <form onSubmit={handleSubmit} className="flex-none border-t border-[#80ff96]/20 bg-[#020603]/96">
+            <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3">
+              <div className="terminal-command-line group flex items-end gap-3">
+                <span className="mb-2 text-sm text-[#ffbd66]" aria-hidden="true">&gt;</span>
                 <textarea
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
                   onKeyDown={handleInputKeyDown}
                   onFocus={event => {
                     const textarea = event.currentTarget
-                    // On iOS, scroll the form into view after keyboard appears
                     setTimeout(() => {
-                      if (document.activeElement === textarea) {
-                        rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
-                      }
+                      if (document.activeElement === textarea) rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'Tracing an answer\u2026' : 'Ask about the work, the systems, or the person'}
-                  className="flex-1 bg-transparent resize-none outline-none text-base sm:text-sm leading-6 text-white/90 placeholder:text-white/28 min-h-[36px] py-1"
+                  placeholder={isProcessing ? 'SEARCHING DATA BANKS…' : 'ENTER QUERY OR COMMAND'}
+                  aria-label="Enter portfolio query or command"
+                  className="min-h-[36px] flex-1 resize-none bg-transparent py-1 text-base uppercase leading-6 tracking-[0.04em] text-[#80ff96] outline-none placeholder:text-[#80ff96]/25 sm:text-sm"
                   rows={1}
                   disabled={isProcessing}
                 />
-                <button
-                  type="submit"
-                  className="flex-none flex items-center justify-center w-9 h-9 rounded-xl bg-[#66e3ff] text-[#05070d] hover:bg-white transition disabled:opacity-25 mb-0.5"
-                  disabled={isProcessing || !currentInput.trim()}
-                  aria-label="Send message"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                    <path d="M12 19V5" />
-                    <path d="m5 12 7-7 7 7" />
-                  </svg>
+                <button type="submit" className="mb-0.5 flex h-9 w-10 flex-none items-center justify-center border border-[#80ff96]/30 bg-[#80ff96]/[0.04] text-[#80ff96] transition hover:border-[#ffbd66] hover:text-[#ffbd66] disabled:opacity-20" disabled={isProcessing || !currentInput.trim()} aria-label="Send message">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></svg>
                 </button>
               </div>
-              <div className="mt-2 flex items-center justify-between px-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/22">
-                <span>{isProcessing ? 'Tracing portfolio context…' : 'Context-aware portfolio interface'}</span>
-                <span className="hidden sm:block">Enter to send · Shift + Enter for line</span>
+              <div className="mt-2 flex items-center justify-between px-1 text-[8px] uppercase tracking-[0.14em] text-[#80ff96]/24">
+                <span>{isProcessing ? 'PROCESSING REQUEST…' : 'TYPE “HELLO JOSHUA” FOR ALTERNATE ACCESS'}</span>
+                <span className="hidden sm:block">ENTER / EXECUTE · SHIFT+ENTER / NEW LINE</span>
               </div>
             </div>
           </form>
@@ -831,76 +726,19 @@ const TerminalResume = () => {
       </div>
 
       {isMobileNavOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-[#02040a]/85 backdrop-blur-md" onClick={() => setIsMobileNavOpen(false)} />
-          <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-white/[0.08] bg-[#080c14]/98 p-4 shadow-[24px_0_80px_rgba(0,0,0,0.5)]">
-            <div className="mb-6 flex items-center justify-between border-b border-white/[0.07] pb-4">
-              <div className="flex items-center gap-3">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#66e3ff]/25 bg-[#66e3ff]/[0.06] font-mono text-xs font-semibold text-[#66e3ff]">JL</div>
-                <div>
-                  <span className="block text-sm font-semibold text-white">Joshua Lossner</span>
-                  <span className="font-mono text-[8px] uppercase tracking-[0.18em] text-white/30">Systems interface</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsMobileNavOpen(false)}
-                className="rounded-xl border border-white/10 p-2 text-white/55 hover:border-[#66e3ff]/50 hover:text-[#66e3ff] transition"
-                aria-label="Close navigation"
-              >
-                <CloseIcon />
-              </button>
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-[#010302]/90" onClick={() => setIsMobileNavOpen(false)} />
+          <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-[#80ff96]/25 bg-[#030805] p-4">
+            <div className="mb-6 flex items-center justify-between border-b border-[#80ff96]/15 pb-4">
+              <div><span className="block text-[10px] uppercase tracking-[0.2em] text-[#ffbd66]">COMMAND DIRECTORY</span><span className="mt-1 block text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/30">SELECT DATA CLASS</span></div>
+              <button type="button" onClick={() => setIsMobileNavOpen(false)} className="border border-[#80ff96]/20 p-2 text-[#80ff96]/55 transition hover:border-[#80ff96] hover:text-[#80ff96]" aria-label="Close navigation"><CloseIcon /></button>
             </div>
-            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.28em] text-white/25">Index / 07</p>
-            <div className="space-y-1">
-              {leftNavSections.map(section => {
-                const isSelected = selectedSectionId === section.id
-                const icon = navIconFor(section.id)
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => handleSectionSelect(section)}
-                    aria-current={isSelected ? 'page' : undefined}
-                    className={`w-full flex items-center gap-3 rounded-xl border px-3 py-2.5 text-sm transition ${
-                      isSelected
-                        ? 'bg-[#66e3ff]/[0.09] border-[#66e3ff]/35 text-white'
-                        : 'bg-transparent border-transparent text-white/60 hover:border-white/10 hover:bg-white/[0.035] hover:text-white'
-                    }`}
-                  >
-                    <span className={`w-5 font-mono text-[9px] ${isSelected ? 'text-[#66e3ff]' : 'text-white/25'}`}>{NAV_CODES[section.id]}</span>
-                    <span className={`flex h-5 w-5 items-center justify-center ${isSelected ? 'text-[#66e3ff]' : 'text-white/35'}`}>{icon}</span>
-                    <span>{section.label}</span>
-                    {isSelected && <span className="ml-auto h-1.5 w-1.5 rounded-full bg-[#66e3ff]" />}
-                  </button>
-                )
-              })}
-            </div>
+            <p className="mb-2 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <div className="space-y-1">{leftNavSections.map(renderDesktopSectionButton)}</div>
             {selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="mt-5 border-t border-white/[0.07] pt-4 space-y-1">
-                <div className="mb-2 flex items-center justify-between">
-                  <p className="font-mono text-[9px] uppercase tracking-[0.28em] text-white/25">Records</p>
-                  <span className="font-mono text-[9px] text-white/20">{String(selectedSection.items.length).padStart(2, '0')}</span>
-                </div>
-                {selectedSection.items.map(item => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      handleItemSelect(selectedSection, item)
-                    }}
-                    className="group w-full text-left rounded-xl px-3 py-2.5 text-xs text-white/65 hover:text-white hover:bg-white/[0.04] border border-transparent hover:border-white/[0.07] transition"
-                    disabled={isProcessing}
-                  >
-                    <span className="flex items-start gap-2 text-[13px] font-medium leading-snug text-white/80 group-hover:text-white">
-                      <span className="mt-1 text-[9px] text-[#66e3ff]/45">↗</span>
-                      {item.title}
-                    </span>
-                    {item.metadata?.period && (
-                      <span className="ml-4 mt-1 block font-mono text-[9px] uppercase tracking-wider text-white/25">{item.metadata.period}</span>
-                    )}
-                  </button>
-                ))}
+              <div className="mt-5 space-y-1 border-t border-[#80ff96]/15 pt-4">
+                <div className="mb-2 flex items-center justify-between"><p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p><span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span></div>
+                {selectedSection.items.map(renderRecordButton)}
               </div>
             )}
           </div>
