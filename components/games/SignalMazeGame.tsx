@@ -7,6 +7,7 @@ type Direction = 'up' | 'down' | 'left' | 'right'
 type MazeState = {
   ant: Point
   spiders: Point[]
+  spiderDirections: Direction[]
   food: string[]
   trail: string[]
   score: number
@@ -35,6 +36,7 @@ const MAZE = [
 ]
 const ANT_START = { x: 1, y: 1 }
 const SPIDER_STARTS = [{ x: 15, y: 7 }, { x: 8, y: 7 }]
+const SPIDER_START_DIRECTIONS: Direction[] = ['left', 'left']
 const DELTAS: Record<Direction, Point> = {
   up: { x: 0, y: -1 },
   down: { x: 0, y: 1 },
@@ -42,6 +44,12 @@ const DELTAS: Record<Direction, Point> = {
   right: { x: 1, y: 0 },
 }
 const DIRECTIONS = Object.keys(DELTAS) as Direction[]
+const ROTATION_BY_DIRECTION: Record<Direction, number> = {
+  up: -90,
+  down: 90,
+  left: 180,
+  right: 0,
+}
 
 const keyFor = ({ x, y }: Point) => `${x}:${y}`
 const isOpen = ({ x, y }: Point) => MAZE[y]?.[x] !== '#'
@@ -63,6 +71,7 @@ const initialFood = () => {
 const initialState = (): MazeState => ({
   ant: ANT_START,
   spiders: SPIDER_STARTS,
+  spiderDirections: SPIDER_START_DIRECTIONS,
   food: initialFood(),
   trail: [],
   score: 0,
@@ -75,6 +84,13 @@ const initialState = (): MazeState => ({
 })
 
 const distanceBetween = (a: Point, b: Point) => Math.abs(a.x - b.x) + Math.abs(a.y - b.y)
+const directionBetween = (from: Point, to: Point, fallback: Direction): Direction => {
+  if (to.x > from.x) return 'right'
+  if (to.x < from.x) return 'left'
+  if (to.y > from.y) return 'down'
+  if (to.y < from.y) return 'up'
+  return fallback
+}
 
 const closestOpenPoint = (target: Point) => {
   let closest = OPEN_POINTS[0]
@@ -135,17 +151,18 @@ const moveStalker = (spider: Point, ant: Point, antDirection: Direction, antMove
 
 function AntGlyph({ direction, legend = false, active = false, caught = false }: { direction: Direction; legend?: boolean; active?: boolean; caught?: boolean }) {
   return (
-    <i className={`maze-ant maze-ant-${direction}${legend ? ' maze-ant-legend' : ''}${active ? ' maze-ant-active' : ''}${caught ? ' maze-ant-caught' : ''}`} aria-hidden="true">
+    <i className={`maze-ant${legend ? ' maze-ant-legend' : ''}${active ? ' maze-ant-active' : ''}${caught ? ' maze-ant-caught' : ''}`} style={{ transform: `rotate(${ROTATION_BY_DIRECTION[direction]}deg)` }} aria-hidden="true">
       <span className="maze-ant-head" />
       <span className="maze-ant-legs" />
     </i>
   )
 }
 
-function SpiderGlyph({ stalker = false, legend = false, active = false, capturing = false }: { stalker?: boolean; legend?: boolean; active?: boolean; capturing?: boolean }) {
+function SpiderGlyph({ direction, stalker = false, legend = false, active = false, capturing = false }: { direction: Direction; stalker?: boolean; legend?: boolean; active?: boolean; capturing?: boolean }) {
   return (
-    <i className={`maze-spider${stalker ? ' maze-spider-stalker' : ''}${legend ? ' maze-spider-legend' : ''}${active ? ' maze-spider-active' : ''}${capturing ? ' maze-spider-capturing' : ''}`} aria-hidden="true">
-      <span />
+    <i className={`maze-spider${stalker ? ' maze-spider-stalker' : ''}${legend ? ' maze-spider-legend' : ''}${active ? ' maze-spider-active' : ''}${capturing ? ' maze-spider-capturing' : ''}`} style={{ transform: `rotate(${ROTATION_BY_DIRECTION[direction]}deg)` }} aria-hidden="true">
+      <span className="maze-spider-body" />
+      <span className="maze-spider-head" />
     </i>
   )
 }
@@ -194,6 +211,9 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
           if (index === 1 && current.tick % 4 === 2) return moveStalker(spider, ant, direction, moved)
           return spider
         })
+        const spiderDirections = spiders.map((spider, index) => (
+          directionBetween(current.spiders[index], spider, current.spiderDirections[index])
+        ))
         const directCapture = spiders.findIndex(spider => samePoint(spider, ant))
         const crossingCapture = current.spiders.findIndex((spider, index) => (
           samePoint(spider, ant) && samePoint(spiders[index], current.ant)
@@ -212,6 +232,7 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
             ...current,
             ant: capturePoint,
             spiders,
+            spiderDirections,
             food,
             trail,
             score,
@@ -228,6 +249,7 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
           ...current,
           ant,
           spiders,
+          spiderDirections,
           food,
           trail,
           score,
@@ -252,6 +274,7 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
           ...current,
           ant: ANT_START,
           spiders: SPIDER_STARTS,
+          spiderDirections: SPIDER_START_DIRECTIONS,
           trail: [],
           status: current.scouts <= 0 ? 'lost' : 'ready',
           direction: 'right',
@@ -324,8 +347,8 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
         <div>
           <div className="maze-legend" aria-label="Game legend">
             <span><AntGlyph direction="right" legend /> ANT / YOU</span>
-            <span><SpiderGlyph legend /> HUNTER / FAST</span>
-            <span><SpiderGlyph stalker legend /> STALKER / SMART</span>
+            <span><SpiderGlyph direction="right" legend /> HUNTER / FAST</span>
+            <span><SpiderGlyph direction="right" stalker legend /> STALKER / SMART</span>
             <span><i className="maze-legend-food" aria-hidden="true" /> FOOD</span>
           </div>
           <div className="maze-grid mt-3 aspect-[17/13] w-full border border-[#80ff96]/30 bg-black/35 p-2" role="img" aria-label={`Colony Protocol game board. ${game.food.length} provisions remain.`}>
@@ -347,7 +370,7 @@ export default function SignalMazeGame({ onBack }: SignalMazeGameProps) {
               </span>
               {game.spiders.map((spider, index) => (
                 <span key={`spider-${index}`} className={`maze-actor ${index === 0 ? 'maze-actor-hunter' : 'maze-actor-stalker'}${game.status === 'caught' && game.capturedBy === index ? ' maze-actor-capturing' : ''}`} style={actorPosition(spider)} aria-hidden="true">
-                  <SpiderGlyph stalker={index === 1} active={game.status === 'playing'} capturing={game.status === 'caught' && game.capturedBy === index} />
+                  <SpiderGlyph direction={game.spiderDirections[index]} stalker={index === 1} active={game.status === 'playing'} capturing={game.status === 'caught' && game.capturedBy === index} />
                 </span>
               ))}
             </div>
