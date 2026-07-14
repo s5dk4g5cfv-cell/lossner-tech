@@ -566,9 +566,9 @@ const TerminalResume = () => {
             </div>
             <div className="mt-12 grid max-w-3xl border-l border-t border-[#80ff96]/20 sm:grid-cols-3">
               {[
-                ['18+', 'YEARS / TECHNOLOGY'],
-                ['18K+', 'DEPLOYMENTS / YEAR'],
-                ['40+', 'AI AGENTS / ORCHESTRATED'],
+                ['4', 'EMPLOYERS / 33 YEARS'],
+                ['7', 'CORE TECHNICAL DOMAINS'],
+                ['25+', 'PLATFORMS & TOOLS'],
               ].map(([value, label]) => (
                 <div key={label} className="border-b border-r border-[#80ff96]/20 bg-[#80ff96]/[0.025] px-5 py-4">
                   <p className="text-xl text-[#ffbd66]">{value}</p>
