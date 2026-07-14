@@ -1,16 +1,9 @@
 import './globals.css'
-import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-})
-
 export const metadata = {
-  title: 'Joshua Lossner - Software Engineer',
-  description: 'Professional portfolio and resume for Joshua Lossner',
+  title: 'Joshua Lossner // Personal Data System',
+  description: 'The portfolio and field notes of DevOps engineer and automation builder Joshua Lossner.',
 }
 
 export default function RootLayout({
@@ -19,7 +12,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={inter.variable}>
+    <html lang="en">
       <body>
         {children}
         {/* Vercel Web Analytics: see requests to /_vercel/insights/view after deploy */}

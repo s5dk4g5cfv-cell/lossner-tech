@@ -2,7 +2,9 @@
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
-import { SidebarIcons } from './icons'
+import dynamic from 'next/dynamic'
+
+const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
 
 type MessageRole = 'system' | 'user' | 'ai'
 
@@ -46,7 +48,18 @@ const SECTION_DEFINITIONS: SectionDefinition[] = [
   { id: 'contact', label: 'Contact', action: 'contact' },
 ]
 
+const NAV_CODES: Record<string, string> = {
+  experience: '01',
+  skills: '02',
+  projects: '03',
+  education: '04',
+  journal: '05',
+  about: '06',
+  contact: '07',
+}
+
 const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.directory)?.id ?? SECTION_DEFINITIONS[0]?.id ?? null
+const JOSHUA_TRIGGER = /^hello[\s,]+joshua[.!?]?$/i
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
 
@@ -93,11 +106,11 @@ const TerminalResume = () => {
     }))
   )
   const [selectedSectionId, setSelectedSectionId] = useState<SectionDefinition['id'] | null>(INITIAL_SELECTED_SECTION_ID)
-  const isSidebarCollapsed = false
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [currentInput, setCurrentInput] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isJoshuaTerminalOpen, setIsJoshuaTerminalOpen] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
@@ -110,7 +123,7 @@ const TerminalResume = () => {
       id: createId(),
       role: 'system',
       heading: 'Welcome',
-      content: "Hey — thanks for stopping by. Browse my work through the menu, or just ask me anything.",
+      content: 'I turn complex systems into clear, durable infrastructure — from enterprise automation to human-AI collaboration.',
     }])
   }, [])
 
@@ -232,6 +245,7 @@ const TerminalResume = () => {
       const m = item.metadata ?? {}
       const metaParts = [
         m.company,
+        m.role,
         m.period || m.timeline || (m.start ? `${m.start} – ${m.end || 'Present'}` : null),
         m.status
       ].filter(Boolean)
@@ -392,6 +406,12 @@ const TerminalResume = () => {
     const userText = currentInput.trim()
     setCurrentInput('')
 
+    if (JOSHUA_TRIGGER.test(userText)) {
+      event.currentTarget.querySelector('textarea')?.blur()
+      setIsJoshuaTerminalOpen(true)
+      return
+    }
+
     const userMessage: Message = {
       id: createId(),
       role: 'user',
@@ -507,271 +527,228 @@ const TerminalResume = () => {
     }
   }
 
-  const toggleAudio = () => {
-    setAudioEnabled(prev => !prev)
-  }
-
   const renderMessage = (message: Message) => {
     const isUser = message.role === 'user'
-    const alignment = isUser ? 'justify-end' : 'justify-start'
-    const background = isUser
-      ? 'bg-emerald-500 text-emerald-950'
-      : message.role === 'system'
-        ? 'bg-white/5 text-white/80'
-        : 'bg-white/10 text-white/90 border-l-2 border-l-emerald-500/40'
+
+    if (message.role === 'system' && message.heading === 'Welcome') {
+      const projectsSection = sections.find(section => section.id === 'projects')
+      const aboutSection = sections.find(section => section.id === 'about')
+
+      return (
+        <section key={message.id} data-message-id={message.id} className="terminal-hero">
+          <div className="terminal-hero-grid" aria-hidden="true" />
+          <div className="relative z-10 max-w-5xl">
+            <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[9px] uppercase tracking-[0.24em] text-[#80ff96]/45">
+              <span className="flex items-center gap-2 text-[#80ff96]"><span className="terminal-status-light" /> LINK ESTABLISHED</span>
+              <span>NODE: DES MOINES / IA</span>
+              <span>ACCESS: PUBLIC</span>
+            </div>
+            <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-[#ffbd66]">PERSONAL DATA SYSTEM / ONLINE</p>
+            <h2 className="terminal-hero-title">GREETINGS.</h2>
+            <p className="mt-7 max-w-3xl text-sm uppercase leading-7 tracking-[0.06em] text-[#80ff96]/72 sm:text-base sm:leading-8">{message.content}</p>
+            <div className="mt-9 flex flex-wrap gap-2">
+              {projectsSection && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await handleSectionSelect(projectsSection)
+                    if (window.innerWidth < 1024) setIsMobileNavOpen(true)
+                  }}
+                  className="terminal-primary-action"
+                >
+                  [ ACCESS PROJECT FILES ]
+                </button>
+              )}
+              {aboutSection && (
+                <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
+                  [ IDENTIFY OPERATOR ]
+                </button>
+              )}
+            </div>
+            <div className="mt-12 grid max-w-3xl border-l border-t border-[#80ff96]/20 sm:grid-cols-3">
+              {[
+                ['4', 'EMPLOYERS / 33 YEARS'],
+                ['7', 'CORE TECHNICAL DOMAINS'],
+                ['25+', 'PLATFORMS & TOOLS'],
+              ].map(([value, label]) => (
+                <div key={label} className="border-b border-r border-[#80ff96]/20 bg-[#80ff96]/[0.025] px-5 py-4">
+                  <p className="text-xl text-[#ffbd66]">{value}</p>
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/42">{label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )
+    }
 
     return (
-      <div key={message.id} data-message-id={message.id} className={`flex ${alignment}`}>
-        <div className={isUser ? 'max-w-lg' : 'max-w-3xl w-full'}>
-          <div className={`rounded-2xl px-4 py-3 shadow-sm border border-white/10 ${background}`}>
-            {message.heading && (
-              <p className="text-sm font-semibold text-white/80 mb-1 uppercase tracking-wide">
-                {message.heading}
-              </p>
-            )}
-            {message.title && (
-              <h2 className="text-lg font-bold text-white mb-1">{message.title}</h2>
-            )}
-            {message.meta && (
-              <p className="text-xs text-white/60 mb-2">{message.meta}</p>
-            )}
+      <div key={message.id} data-message-id={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
+        <div className={isUser ? 'max-w-2xl' : 'w-full max-w-5xl'}>
+          <article className={isUser ? 'terminal-user-message' : 'terminal-record'}>
+            {message.heading && <p className="mb-3 text-[9px] uppercase tracking-[0.26em] text-[#ffbd66]">{'>'} DIRECTORY / {message.heading}</p>}
+            {message.title && <h2 className="mb-2 max-w-3xl text-xl uppercase leading-tight tracking-[0.04em] text-[#80ff96] sm:text-2xl">{message.title}</h2>}
+            {message.meta && <p className="mb-5 text-[9px] uppercase tracking-[0.16em] text-[#80ff96]/42">{message.meta}</p>}
             {message.isMarkdown ? (
-              <div className="prose prose-invert max-w-none prose-headings:text-white prose-strong:text-white prose-a:text-emerald-200 hover:prose-a:text-emerald-100 prose-code:font-mono prose-pre:font-mono">
-                <ReactMarkdown>{message.content}</ReactMarkdown>
-              </div>
+              <div className="prose terminal-prose max-w-none"><ReactMarkdown>{message.content}</ReactMarkdown></div>
             ) : (
-              <p className="text-sm leading-6 whitespace-pre-line">{message.content}</p>
+              <p className="whitespace-pre-line text-sm uppercase leading-6 tracking-[0.04em]">{message.content}</p>
             )}
-          </div>
+          </article>
         </div>
       </div>
     )
   }
 
   const leftNavSections = useMemo(() => sections.filter(section => section.directory || section.action), [sections])
-  const sidebarWidthClasses = isSidebarCollapsed ? 'lg:w-20' : 'lg:w-[280px]'
-
-  const navIconFor = (id: string) => SidebarIcons[id as keyof typeof SidebarIcons] ?? SidebarIcons.about
 
   const renderDesktopSectionButton = (section: SectionState) => {
     const isSelected = selectedSectionId === section.id
-    const icon = navIconFor(section.id)
-
-    return (
-      <button
-        key={section.id}
-        type="button"
-        title={isSidebarCollapsed ? section.label : undefined}
-        onClick={() => handleSectionSelect(section)}
-        className={`w-full rounded-lg border transition px-3 py-2 text-left flex items-center ${
-          isSidebarCollapsed ? 'justify-center' : 'gap-3'
-        } ${
-          isSelected
-            ? 'bg-emerald-500/15 border-emerald-400/60 text-emerald-200'
-            : 'bg-white/5 border-white/10 text-white/80 hover:border-emerald-400/60 hover:text-emerald-200'
-        }`}
-      >
-        <span className="flex h-5 w-5 items-center justify-center text-white/60">{icon}</span>
-        {!isSidebarCollapsed && (
-          <span className="text-sm font-medium leading-tight">{section.label}</span>
-        )}
-        {!isSidebarCollapsed && section.directory && isSelected && (
-          <span className="ml-auto text-[10px] uppercase text-emerald-200">Active</span>
-        )}
-      </button>
-    )
-  }
-
-  const renderMobileSectionButton = (section: SectionState) => {
-    const isSelected = selectedSectionId === section.id
-    const icon = navIconFor(section.id)
 
     return (
       <button
         key={section.id}
         type="button"
         onClick={() => handleSectionSelect(section)}
-        className={`rounded-full px-4 py-1.5 text-xs font-medium border transition flex items-center gap-2 ${
-          isSelected
-            ? 'bg-emerald-500/20 border-emerald-400/70 text-emerald-200'
-            : 'bg-white/5 border-white/10 text-white/70 hover:border-emerald-400/60 hover:text-emerald-200'
-        }`}
+        aria-current={isSelected ? 'page' : undefined}
+        className={`terminal-nav-item ${isSelected ? 'terminal-nav-item-active' : ''}`}
       >
-        <span className="flex h-4 w-4 items-center justify-center text-white/60">{icon}</span>
-        {section.label}
+        <span className={isSelected ? 'text-[#ffbd66]' : 'text-[#80ff96]/32'}>{NAV_CODES[section.id]}</span>
+        <span>{section.label.toUpperCase()}</span>
+        <span className="ml-auto opacity-30">{isSelected ? '◼' : '>'}</span>
       </button>
     )
   }
+
+  const renderRecordButton = (item: ContentItem) => selectedSection ? (
+    <button
+      key={item.id}
+      type="button"
+      onClick={() => handleItemSelect(selectedSection, item)}
+      className="group w-full border-l border-transparent px-3 py-2.5 text-left text-[#80ff96]/58 transition hover:border-[#ffbd66] hover:bg-[#80ff96]/[0.04] hover:text-[#80ff96]"
+      disabled={isProcessing}
+    >
+      <span className="flex items-start gap-2 text-[11px] uppercase leading-snug tracking-[0.04em]"><span className="mt-px text-[#ffbd66]/45">&gt;</span>{item.title}</span>
+      {item.metadata?.period && <span className="ml-4 mt-1 block text-[8px] uppercase tracking-wider text-[#80ff96]/25">{item.metadata.period}</span>}
+    </button>
+  ) : null
 
   return (
-    <div ref={rootRef} className="h-[100dvh] bg-slate-950 text-slate-100 flex overflow-hidden">
-      <aside className={`hidden lg:flex ${sidebarWidthClasses} border-r border-white/10 bg-gradient-to-b from-slate-900/80 to-slate-950/90 backdrop-blur flex-shrink-0`}>
+    <div ref={rootRef} className="wargames-shell flex h-[100dvh] overflow-hidden text-[#80ff96]">
+      <div className="wargames-scanlines" aria-hidden="true" />
+      <aside className="relative z-10 hidden w-[286px] flex-shrink-0 border-r border-[#80ff96]/20 bg-[#030805]/95 lg:flex">
         <div className="flex h-full w-full flex-col overflow-hidden">
-          <div className="flex-1 flex flex-col overflow-hidden">
-            <div className={isSidebarCollapsed ? 'flex-1 overflow-y-auto px-2 py-4 space-y-1' : 'px-2 py-4 space-y-1 flex-none'}>
-              {leftNavSections.map(renderDesktopSectionButton)}
-            </div>
-
-            {!isSidebarCollapsed && selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="flex-1 overflow-y-auto border-t border-white/10 pt-3">
-                <p className="px-1 text-xs uppercase tracking-[0.3em] text-white/40">Entries</p>
+          <div className="border-b border-[#80ff96]/20 px-5 py-5">
+            <p className="text-[9px] uppercase tracking-[0.28em] text-[#ffbd66]">COMMAND DIRECTORY</p>
+            <p className="mt-2 text-[9px] tracking-[0.12em] text-[#80ff96]/38">SELECT DATA CLASS</p>
+          </div>
+          <div className="flex flex-1 flex-col overflow-hidden">
+            <p className="px-5 pb-2 pt-5 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <div className="flex-none space-y-1 px-2 pb-4">{leftNavSections.map(renderDesktopSectionButton)}</div>
+            {selectedSection?.directory && selectedSection.action !== 'about' && (
+              <div className="fine-scrollbar flex-1 overflow-y-auto border-t border-[#80ff96]/15 pt-4">
+                <div className="flex items-center justify-between px-5 pb-2">
+                  <p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p>
+                  <span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span>
+                </div>
                 <div className="space-y-1 px-2 pb-4">
-                  {selectedSection.loading && (
-                    <p className="text-xs text-white/40 px-2 py-2">Loading…</p>
-                  )}
-                  {selectedSection.error && (
-                    <p className="text-xs text-red-300 px-2 py-2">{selectedSection.error}</p>
-                  )}
-                  {selectedSection.items.map(item => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      onClick={() => handleItemSelect(selectedSection, item)}
-                      className="w-full text-left rounded-md px-3 py-2 text-xs text-white/75 hover:text-emerald-200 hover:bg-emerald-400/10 border border-white/5"
-                      disabled={isProcessing}
-                    >
-                      <span className="block text-sm font-medium text-white/90">{item.title}</span>
-                      {item.metadata?.period && (
-                        <span className="text-[11px] text-white/40">{item.metadata.period}</span>
-                      )}
-                    </button>
-                  ))}
-                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && (
-                    <p className="text-xs text-white/40 px-2 py-2">No entries yet.</p>
-                  )}
+                  {selectedSection.loading && <p className="px-3 py-2 text-[10px] text-[#80ff96]/40">READING DIRECTORY…</p>}
+                  {selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#ff5f57]">{selectedSection.error}</p>}
+                  {selectedSection.items.map(renderRecordButton)}
+                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#80ff96]/35">NO RECORDS</p>}
                 </div>
               </div>
             )}
           </div>
+          <div className="border-t border-[#80ff96]/15 px-5 py-4 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/28">
+            <div className="flex items-center justify-between"><span>CARRIER</span><span className="flex items-center gap-2 text-[#80ff96]/75"><span className="terminal-status-light" /> ONLINE</span></div>
+          </div>
         </div>
       </aside>
 
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-40 border-b border-white/10 bg-slate-950/95 backdrop-blur">
-          <div className="mx-auto w-full max-w-[1200px] px-[clamp(16px,4vw,64px)] py-4">
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsMobileNavOpen(true)}
-                className="lg:hidden rounded-full border border-white/10 p-2 text-white/70 hover:border-emerald-400/70 hover:text-emerald-200 transition"
-                aria-label="Open navigation"
-              >
-                <MenuIcon />
-              </button>
-              <div>
-                <h1 className="text-lg font-semibold tracking-tight">Joshua Lossner</h1>
-                <p className="text-xs text-white/40">Software Engineer &middot; lossner.tech</p>
+      <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
+        <header className="sticky top-0 z-40 border-b border-[#80ff96]/20 bg-[#020603]/94">
+          <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3.5">
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <button type="button" onClick={() => setIsMobileNavOpen(true)} className="border border-[#80ff96]/25 p-2 text-[#80ff96]/60 transition hover:border-[#80ff96] hover:text-[#80ff96] lg:hidden" aria-label="Open navigation"><MenuIcon /></button>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] uppercase tracking-[0.22em] text-[#ffbd66]">JOSHUA LOSSNER</span>
+                    <span className="text-[#80ff96]/18">{'//'}</span>
+                    <h1 className="text-[10px] uppercase tracking-[0.16em] text-[#80ff96] sm:text-xs">PERSONAL DATA SYSTEM</h1>
+                  </div>
+                  <p className="mt-1 hidden text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/28 sm:block">DEVOPS / AUTOMATION / HUMAN-AI SYSTEMS</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3 text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/30">
+                <span className="hidden sm:inline">SESSION 83-A</span>
+                <span className="flex items-center gap-2 border border-[#80ff96]/15 px-3 py-1.5 text-[#80ff96]/72"><span className="terminal-status-light" /> ONLINE</span>
               </div>
             </div>
           </div>
         </header>
 
-        <main className="flex-1 flex flex-col overflow-hidden">
-          <div ref={chatScrollRef} className="flex-1 overflow-y-auto">
-            <div className="px-[clamp(16px,4vw,64px)] py-6 lg:py-10 space-y-4 max-w-[1200px] mx-auto w-full">
-              {messages.map(renderMessage)}
-              <div ref={messagesEndRef} />
-            </div>
+        <main className="flex flex-1 flex-col overflow-hidden">
+          <div ref={chatScrollRef} className="fine-scrollbar flex-1 overflow-y-auto">
+            <div className="mx-auto w-full max-w-[1320px] space-y-6 px-[clamp(16px,4vw,64px)] py-5 lg:py-9">{messages.map(renderMessage)}<div ref={messagesEndRef} /></div>
           </div>
-
-          <form onSubmit={handleSubmit} className="flex-none border-t border-white/10 bg-slate-950/85 backdrop-blur">
-            <div className="px-[clamp(16px,4vw,64px)] py-3 max-w-[1200px] mx-auto w-full">
-              <div className="rounded-2xl border border-white/10 bg-white/5 pl-4 pr-2 py-2 focus-within:border-emerald-400/70 transition flex items-end gap-2">
+          <form onSubmit={handleSubmit} className="flex-none border-t border-[#80ff96]/20 bg-[#020603]/96">
+            <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3">
+              <div className="terminal-command-line group flex items-end gap-3">
+                <span className="mb-2 text-sm text-[#ffbd66]" aria-hidden="true">&gt;</span>
                 <textarea
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
                   onKeyDown={handleInputKeyDown}
-                  onFocus={() => {
-                    // On iOS, scroll the form into view after keyboard appears
+                  onFocus={event => {
+                    const textarea = event.currentTarget
                     setTimeout(() => {
-                      rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+                      if (document.activeElement === textarea) rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'Thinking\u2026' : 'Ask me anything'}
-                  className="flex-1 bg-transparent resize-none outline-none text-base sm:text-sm leading-6 placeholder:text-white/40 min-h-[36px] py-1"
+                  placeholder={isProcessing ? 'SEARCHING DATA BANKS…' : 'ENTER QUERY OR COMMAND'}
+                  aria-label="Enter portfolio query or command"
+                  className="min-h-[36px] flex-1 resize-none bg-transparent py-1 text-base uppercase leading-6 tracking-[0.04em] text-[#80ff96] outline-none placeholder:text-[#80ff96]/25 sm:text-sm"
                   rows={1}
                   disabled={isProcessing}
                 />
-                <button
-                  type="submit"
-                  className="flex-none flex items-center justify-center w-8 h-8 rounded-full bg-emerald-500 text-emerald-950 hover:bg-emerald-400 transition disabled:opacity-30 mb-0.5"
-                  disabled={isProcessing || !currentInput.trim()}
-                  aria-label="Send message"
-                >
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
-                    <path d="M12 19V5" />
-                    <path d="m5 12 7-7 7 7" />
-                  </svg>
+                <button type="submit" className="mb-0.5 flex h-9 w-10 flex-none items-center justify-center border border-[#80ff96]/30 bg-[#80ff96]/[0.04] text-[#80ff96] transition hover:border-[#ffbd66] hover:text-[#ffbd66] disabled:opacity-20" disabled={isProcessing || !currentInput.trim()} aria-label="Send message">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></svg>
                 </button>
               </div>
-              {isProcessing && (
-                <p className="text-xs text-white/50 mt-2 ml-1">Working…</p>
-              )}
+              <div className="mt-2 flex items-center justify-between px-1 text-[8px] uppercase tracking-[0.14em] text-[#80ff96]/24">
+                <span>{isProcessing ? 'PROCESSING REQUEST…' : 'TYPE “HELLO JOSHUA” FOR ALTERNATE ACCESS'}</span>
+                <span className="hidden sm:block">ENTER / EXECUTE · SHIFT+ENTER / NEW LINE</span>
+              </div>
             </div>
           </form>
         </main>
       </div>
 
       {isMobileNavOpen && (
-        <div className="lg:hidden fixed inset-0 z-50">
-          <div className="absolute inset-0 bg-slate-950/80 backdrop-blur" onClick={() => setIsMobileNavOpen(false)} />
-          <div className="relative h-full w-72 max-w-[85vw] bg-slate-900/95 shadow-xl p-4 space-y-4 overflow-y-auto">
-            <div className="flex items-center justify-between">
-              <span className="text-sm font-semibold text-white/80">Navigate</span>
-              <button
-                type="button"
-                onClick={() => setIsMobileNavOpen(false)}
-                className="rounded-full border border-white/10 p-2 text-white/70 hover:border-emerald-400/70 hover:text-emerald-200 transition"
-                aria-label="Close navigation"
-              >
-                <CloseIcon />
-              </button>
+        <div className="fixed inset-0 z-50 lg:hidden">
+          <div className="absolute inset-0 bg-[#010302]/90" onClick={() => setIsMobileNavOpen(false)} />
+          <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-[#80ff96]/25 bg-[#030805] p-4">
+            <div className="mb-6 flex items-center justify-between border-b border-[#80ff96]/15 pb-4">
+              <div><span className="block text-[10px] uppercase tracking-[0.2em] text-[#ffbd66]">COMMAND DIRECTORY</span><span className="mt-1 block text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/30">SELECT DATA CLASS</span></div>
+              <button type="button" onClick={() => setIsMobileNavOpen(false)} className="border border-[#80ff96]/20 p-2 text-[#80ff96]/55 transition hover:border-[#80ff96] hover:text-[#80ff96]" aria-label="Close navigation"><CloseIcon /></button>
             </div>
-            <div className="space-y-2">
-              {leftNavSections.map(section => {
-                const isSelected = selectedSectionId === section.id
-                const icon = navIconFor(section.id)
-                return (
-                  <button
-                    key={section.id}
-                    type="button"
-                    onClick={() => handleSectionSelect(section)}
-                    className={`w-full flex items-center gap-3 rounded-lg border px-3 py-2 text-sm transition ${
-                      isSelected
-                        ? 'bg-emerald-500/15 border-emerald-400/60 text-emerald-200'
-                        : 'bg-white/5 border-white/10 text-white/80 hover:border-emerald-400/60 hover:text-emerald-200'
-                    }`}
-                  >
-                    <span className="flex h-5 w-5 items-center justify-center text-white/60">{icon}</span>
-                    <span>{section.label}</span>
-                  </button>
-                )
-              })}
-            </div>
+            <p className="mb-2 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <div className="space-y-1">{leftNavSections.map(renderDesktopSectionButton)}</div>
             {selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="border-t border-white/10 pt-3 space-y-2">
-                <p className="text-xs uppercase tracking-[0.3em] text-white/40">Entries</p>
-                {selectedSection.items.map(item => (
-                  <button
-                    key={item.id}
-                    type="button"
-                    onClick={() => {
-                      handleItemSelect(selectedSection, item)
-                    }}
-                    className="w-full text-left rounded-md px-3 py-2 text-xs text-white/75 hover:text-emerald-200 hover:bg-emerald-400/10 border border-white/10"
-                    disabled={isProcessing}
-                  >
-                    <span className="block text-sm font-medium text-white/90">{item.title}</span>
-                    {item.metadata?.period && (
-                      <span className="text-[11px] text-white/40">{item.metadata.period}</span>
-                    )}
-                  </button>
-                ))}
+              <div className="mt-5 space-y-1 border-t border-[#80ff96]/15 pt-4">
+                <div className="mb-2 flex items-center justify-between"><p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p><span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span></div>
+                {selectedSection.items.map(renderRecordButton)}
               </div>
             )}
           </div>
         </div>
       )}
+
+      {isJoshuaTerminalOpen ? (
+        <JoshuaTerminal onClose={() => setIsJoshuaTerminalOpen(false)} />
+      ) : null}
 
       <audio
         ref={audioRef}
