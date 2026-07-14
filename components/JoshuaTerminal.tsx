@@ -17,7 +17,7 @@ const BOOT_LINES = [
 const GAMES: Array<{ id: Exclude<TerminalView, 'boot' | 'menu'>; code: string; title: string; note: string }> = [
   { id: 'tic-tac-toe', code: '01', title: 'TIC-TAC-TOE', note: 'COMPLETE SEARCH' },
   { id: 'vector-defense', code: '02', title: 'VECTOR DEFENSE', note: 'MISSILE INTERCEPT' },
-  { id: 'signal-maze', code: '03', title: 'SIGNAL MAZE', note: 'NETWORK CHASE' },
+  { id: 'signal-maze', code: '03', title: 'COLONY PROTOCOL', note: 'SCOUT / PREDATOR' },
 ]
 
 interface JoshuaTerminalProps { onClose: () => void }
