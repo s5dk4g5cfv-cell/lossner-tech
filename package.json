@@ -2,31 +2,52 @@
   "name": "lossner-tech",
   "version": "1.0.1",
   "private": true,
+  "engines": {
+    "node": ">=22.13.0"
+  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext dev",
+    "build": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext build",
+    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "test": "npm run typecheck && npm run build && node --test tests/*.test.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next"
   },
   "dependencies": {
-    "@tailwindcss/typography": "^0.5.16",
-    "@vercel/analytics": "^1.5.0",
-    "autoprefixer": "^10.4.16",
-    "next": "15.4.10",
-    "@anthropic-ai/sdk": "^0.39.0",
-    "postcss": "^8.4.32",
-    "react": "^18",
-    "react-dom": "^18",
-    "react-markdown": "^10.1.0",
-    "tailwindcss": "^3.3.6",
-    "yaml": "^2.8.1"
+    "@tailwindcss/typography": "0.5.16",
+    "autoprefixer": "10.4.21",
+    "openai": "7.5.0",
+    "postcss": "8.5.26",
+    "react": "19.2.6",
+    "react-dom": "19.2.6",
+    "react-markdown": "10.1.0",
+    "tailwindcss": "3.4.17",
+    "yaml": "2.9.0"
   },
   "devDependencies": {
-    "@types/node": "^20.19.2",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "14.0.0",
-    "typescript": "^5"
-  }
+    "@cloudflare/vite-plugin": "1.37.1",
+    "@eslint/js": "9.39.4",
+    "@next/eslint-plugin-next": "16.2.6",
+    "@openai/sites-vite-plugin": "0.1.0",
+    "@types/node": "22.19.19",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
+    "eslint": "9.39.4",
+    "eslint-plugin-jsx-a11y": "6.10.2",
+    "eslint-plugin-react": "7.37.5",
+    "eslint-plugin-react-hooks": "7.1.1",
+    "globals": "16.4.0",
+    "react-server-dom-webpack": "19.2.6",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.59.3",
+    "vinext": "1.0.0-beta.2",
+    "vite": "8.0.13",
+    "wrangler": "4.92.0"
+  },
+  "overrides": {
+    "ws": "8.21.3"
+  },
+  "type": "module"
 }

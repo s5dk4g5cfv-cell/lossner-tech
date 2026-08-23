@@ -1,5 +1,7 @@
+import typography from '@tailwindcss/typography'
+
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+const config = {
   content: [
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
@@ -19,17 +21,17 @@ module.exports = {
       },
       animation: {
         'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'flicker': 'flicker 0.15s infinite',
+        flicker: 'flicker 0.15s infinite',
       },
       keyframes: {
         flicker: {
           '0%, 100%': { opacity: '1' },
           '50%': { opacity: '0.8' },
-        }
-      }
+        },
+      },
     },
   },
-  plugins: [
-    require('@tailwindcss/typography'),
-  ],
+  plugins: [typography],
 }
+
+export default config

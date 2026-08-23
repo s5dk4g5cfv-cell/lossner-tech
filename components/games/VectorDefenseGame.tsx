@@ -119,7 +119,7 @@ export default function VectorDefenseGame({ onBack }: VectorDefenseGameProps) {
         className="mt-5 w-full cursor-crosshair border border-[#80ff96]/30 bg-black/35 touch-none"
       >
         <path d="M0 545H1000" stroke="#80ff96" strokeOpacity=".25" />
-        {[100, 500, 900].map((x, index) => (
+        {[100, 500, 900].map(x => (
           <g key={x} transform={`translate(${x} 545)`} stroke="#ffbd66" fill="none" strokeWidth="4">
             <path d="M-22 0V-19L0-34L22-19V0" />
             <path d="M-8 -23H8M0-33V0" opacity=".55" />

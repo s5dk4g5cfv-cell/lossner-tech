@@ -23,8 +23,9 @@ const GAMES: Array<{ id: Exclude<TerminalView, 'boot' | 'menu'>; code: string; t
 interface JoshuaTerminalProps { onClose: () => void }
 
 export default function JoshuaTerminal({ onClose }: JoshuaTerminalProps) {
-  const [view, setView] = useState<TerminalView>('boot')
-  const [bootLines, setBootLines] = useState<string[]>([])
+  const reduceMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  const [view, setView] = useState<TerminalView>(() => reduceMotion ? 'menu' : 'boot')
+  const [bootLines, setBootLines] = useState<string[]>(() => reduceMotion ? BOOT_LINES : [])
   const closeButtonRef = useRef<HTMLButtonElement>(null)
   const priorFocusRef = useRef<HTMLElement | null>(null)
 
@@ -43,12 +44,6 @@ export default function JoshuaTerminal({ onClose }: JoshuaTerminalProps) {
 
   useEffect(() => {
     if (view !== 'boot') return
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (reducedMotion) {
-      setBootLines(BOOT_LINES)
-      setView('menu')
-      return
-    }
     const timers = BOOT_LINES.map((_, index) => window.setTimeout(() => {
       setBootLines(BOOT_LINES.slice(0, index + 1))
     }, 240 + index * 430))

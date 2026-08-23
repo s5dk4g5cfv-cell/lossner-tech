@@ -1,47 +1,23 @@
-import { promises as fs } from 'fs'
-import path from 'path'
-import YAML from 'yaml'
+import { listContentRecords, type ContentMetadata } from './content'
 
-type FrontmatterResult = {
-  metadata: Record<string, any>
+type ResumeEntry = {
+  title: string
+  metadata: ContentMetadata
   body: string
 }
 
-const CONTENT_ROOT = path.join(process.cwd(), 'content')
-
-function parseFrontmatter(source: string): FrontmatterResult {
-  const match = source.match(/^---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/)
-  if (!match) {
-    return { metadata: {}, body: source.trim() }
-  }
-
-  let metadata: Record<string, any> = {}
-  try {
-    metadata = YAML.parse(match[1]) ?? {}
-  } catch (error) {
-    console.error('Failed to parse frontmatter in resume context loader', error)
-  }
-
-  return {
-    metadata,
-    body: match[2].trim()
-  }
+async function readDirectoryEntries(directory: string) {
+  return listContentRecords(directory).map(entry => ({
+    name: entry.filename,
+    title: entry.title,
+    metadata: entry.metadata,
+    body: entry.body,
+  }))
 }
 
-async function readDirectoryEntries(directory: string) {
-  const dirPath = path.join(CONTENT_ROOT, directory)
-  const entries = await fs.readdir(dirPath, { withFileTypes: true })
-  const files = entries.filter(entry => entry.isFile() && entry.name.endsWith('.md'))
-  return Promise.all(files.map(async entry => {
-    const fullPath = path.join(dirPath, entry.name)
-    const content = await fs.readFile(fullPath, 'utf8')
-    const parsed = parseFrontmatter(content)
-    return {
-      name: entry.name,
-      metadata: parsed.metadata,
-      body: parsed.body
-    }
-  }))
+function metadataText(metadata: ContentMetadata, key: string) {
+  const value = metadata[key]
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
 }
 
 function summarizeBody(body: string, maxLength = 400) {
@@ -52,65 +28,71 @@ function summarizeBody(body: string, maxLength = 400) {
   return summary.slice(0, maxLength).trimEnd() + '…'
 }
 
-function formatExperience(items: Array<{ metadata: Record<string, any>; body: string }>) {
+function formatExperience(items: ResumeEntry[]) {
   if (!items.length) return ''
   return items
     .map(item => {
-      const title = item.metadata.title ?? 'Role'
-      const company = item.metadata.company ? ` at ${item.metadata.company}` : ''
-      const start = item.metadata.start ?? '????-??'
-      const end = item.metadata.end ?? '????-??'
+      const title = item.title || 'Role'
+      const companyName = metadataText(item.metadata, 'company')
+      const company = companyName ? ` at ${companyName}` : ''
+      const start = metadataText(item.metadata, 'start') || '????-??'
+      const end = metadataText(item.metadata, 'end') || '????-??'
       const summary = summarizeBody(item.body, 260)
       return `- ${title}${company} (${start} – ${end})\n  ${summary}`
     })
     .join('\n')
 }
 
-function formatProjects(items: Array<{ metadata: Record<string, any>; body: string }>) {
+function formatProjects(items: ResumeEntry[]) {
   if (!items.length) return ''
   return items
     .map(item => {
-      const title = item.metadata.title ?? 'Project'
-      const role = item.metadata.role ? ` — ${item.metadata.role}` : ''
-      const timeline = item.metadata.timeline ? ` (${item.metadata.timeline})` : ''
-      const status = item.metadata.status === 'in-progress' ? ' [IN PROGRESS]' : item.metadata.status === 'completed' ? ' [COMPLETED]' : ''
+      const title = item.title || 'Project'
+      const roleValue = metadataText(item.metadata, 'role')
+      const timelineValue = metadataText(item.metadata, 'timeline')
+      const statusValue = metadataText(item.metadata, 'status')
+      const role = roleValue ? ` — ${roleValue}` : ''
+      const timeline = timelineValue ? ` (${timelineValue})` : ''
+      const status = statusValue === 'in-progress' ? ' [IN PROGRESS]' : statusValue === 'completed' ? ' [COMPLETED]' : ''
       const summary = summarizeBody(item.body, 240)
       return `- ${title}${role}${timeline}${status}\n  ${summary}`
     })
     .join('\n')
 }
 
-function formatEducation(items: Array<{ metadata: Record<string, any>; body: string }>) {
+function formatEducation(items: ResumeEntry[]) {
   if (!items.length) return ''
   return items
     .map(item => {
-      const title = item.metadata.title ?? item.metadata.degree ?? 'Education'
-      const school = item.metadata.school ? ` at ${item.metadata.school}` : ''
-      const start = item.metadata.start ?? '????-??'
-      const end = item.metadata.end ?? '????-??'
+      const title = item.title || metadataText(item.metadata, 'degree') || 'Education'
+      const schoolName = metadataText(item.metadata, 'school')
+      const school = schoolName ? ` at ${schoolName}` : ''
+      const start = metadataText(item.metadata, 'start') || '????-??'
+      const end = metadataText(item.metadata, 'end') || '????-??'
       const summary = summarizeBody(item.body, 220)
       return `- ${title}${school} (${start} – ${end})\n  ${summary}`
     })
     .join('\n')
 }
 
-function formatSkills(items: Array<{ metadata: Record<string, any>; body: string }>) {
+function formatSkills(items: ResumeEntry[]) {
   if (!items.length) return ''
   return items
     .map(item => {
-      const title = item.metadata.title ?? 'Skill'
+      const title = item.title || 'Skill'
       const summary = summarizeBody(item.body, 200)
       return `- ${title}: ${summary}`
     })
     .join('\n')
 }
 
-function formatJournal(items: Array<{ metadata: Record<string, any>; body: string }>) {
+function formatJournal(items: ResumeEntry[]) {
   if (!items.length) return ''
   return items
     .map(item => {
-      const title = item.metadata.title ?? 'Entry'
-      const date = item.metadata.date ? ` (${item.metadata.date})` : ''
+      const title = item.title || 'Entry'
+      const dateValue = metadataText(item.metadata, 'date')
+      const date = dateValue ? ` (${dateValue})` : ''
       const summary = summarizeBody(item.body, 220)
       return `- ${title}${date}\n  ${summary}`
     })

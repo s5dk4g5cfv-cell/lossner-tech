@@ -22,7 +22,23 @@ type ContentItem = {
   id: string
   title: string
   filename: string
-  metadata?: Record<string, any>
+  metadata?: ContentMetadata
+}
+
+type ContentMetadata = Record<string, unknown>
+
+type ContentListResponse = {
+  files?: Array<{
+    name: string
+    title: string
+    metadata?: ContentMetadata
+  }>
+}
+
+type ContentFileResponse = {
+  title?: string
+  content?: string
+  metadata?: ContentMetadata
 }
 
 type SectionDefinition = {
@@ -60,8 +76,16 @@ const NAV_CODES: Record<string, string> = {
 
 const INITIAL_SELECTED_SECTION_ID = SECTION_DEFINITIONS.find(section => section.directory)?.id ?? SECTION_DEFINITIONS[0]?.id ?? null
 const JOSHUA_TRIGGER = /^hello[\s,]+joshua[.!?]?$/i
+const MAX_MESSAGE_CHARACTERS = 2_000
 
 const createId = () => Math.random().toString(36).slice(2) + Date.now().toString(36)
+
+const errorMessage = (error: unknown, fallback: string) => error instanceof Error ? error.message : fallback
+
+const metadataText = (metadata: ContentMetadata | undefined, key: string) => {
+  const value = metadata?.[key]
+  return typeof value === 'string' || typeof value === 'number' ? String(value) : ''
+}
 
 const stripLeadingMeta = (content: string) => {
   // Strip the heading line (## Title)
@@ -111,11 +135,8 @@ const TerminalResume = () => {
   const [currentInput, setCurrentInput] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
   const [isJoshuaTerminalOpen, setIsJoshuaTerminalOpen] = useState(false)
-  const [audioEnabled, setAudioEnabled] = useState(false)
-  const [isPlaying, setIsPlaying] = useState(false)
   const chatScrollRef = useRef<HTMLDivElement>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
   const rootRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -192,8 +213,8 @@ const TerminalResume = () => {
     if (!response.ok) {
       throw new Error('Failed to load content list')
     }
-    const data = await response.json()
-    return (data.files || []).map((file: any) => ({
+    const data = await response.json() as ContentListResponse
+    return (data.files ?? []).map(file => ({
       id: file.name,
       title: file.title,
       filename: file.name,
@@ -201,12 +222,12 @@ const TerminalResume = () => {
     }))
   }, [])
 
-  const fetchFileContent = async (directory: string, filename: string) => {
+  const fetchFileContent = async (directory: string, filename: string): Promise<ContentFileResponse> => {
     const response = await fetch(`/api/content?directory=${encodeURIComponent(directory)}&file=${encodeURIComponent(filename)}`)
     if (!response.ok) {
       throw new Error('Failed to load content')
     }
-    return response.json()
+    return response.json() as Promise<ContentFileResponse>
   }
 
   const loadSectionItems = useCallback(async (sectionId: string, directory: string) => {
@@ -215,8 +236,8 @@ const TerminalResume = () => {
       const items = await fetchDirectoryItems(directory)
       const sortedItems = sortItemsForSection(sectionId, items)
       updateSection(sectionId, current => ({ ...current, items: sortedItems, loading: false }))
-    } catch (error: any) {
-      updateSection(sectionId, current => ({ ...current, loading: false, error: error?.message ?? 'Unable to load content.' }))
+    } catch (error: unknown) {
+      updateSection(sectionId, current => ({ ...current, loading: false, error: errorMessage(error, 'Unable to load content.') }))
     }
   }, [fetchDirectoryItems, updateSection])
 
@@ -243,11 +264,13 @@ const TerminalResume = () => {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
       const m = item.metadata ?? {}
+      const start = metadataText(m, 'start')
+      const end = metadataText(m, 'end')
       const metaParts = [
-        m.company,
-        m.role,
-        m.period || m.timeline || (m.start ? `${m.start} – ${m.end || 'Present'}` : null),
-        m.status
+        metadataText(m, 'company'),
+        metadataText(m, 'role'),
+        metadataText(m, 'period') || metadataText(m, 'timeline') || (start ? `${start} – ${end || 'Present'}` : ''),
+        metadataText(m, 'status')
       ].filter(Boolean)
       appendMessage({
         id: createId(),
@@ -258,15 +281,12 @@ const TerminalResume = () => {
         isMarkdown: true,
         meta: metaParts.join(' · ') || undefined
       })
-      if (audioEnabled && data.content) {
-        await generateSpeech(data.content)
-      }
-    } catch (error: any) {
+    } catch (error: unknown) {
       appendMessage({
         id: createId(),
         role: 'system',
         heading: 'Oops',
-        content: error?.message ?? 'Unable to load that entry right now.',
+        content: errorMessage(error, 'Unable to load that entry right now.'),
       })
     } finally {
       setIsProcessing(false)
@@ -343,18 +363,15 @@ const TerminalResume = () => {
             heading: section.label,
             content: stripLeadingMeta(data.content ?? ''),
             isMarkdown: true,
-            meta: firstItem.metadata?.period || firstItem.metadata?.timeline || firstItem.metadata?.status,
+            meta: metadataText(firstItem.metadata, 'period') || metadataText(firstItem.metadata, 'timeline') || metadataText(firstItem.metadata, 'status') || undefined,
           })
 
-          if (audioEnabled && data.content) {
-            await generateSpeech(data.content)
-          }
-        } catch (error: any) {
+        } catch (error: unknown) {
           appendMessage({
             id: createId(),
             role: 'system',
             heading: 'Oops',
-            content: error?.message ?? 'Unable to load About right now.',
+            content: errorMessage(error, 'Unable to load About right now.'),
           })
         } finally {
           setIsProcessing(false)
@@ -421,9 +438,10 @@ const TerminalResume = () => {
 
     const historyForServer = messages
       .filter(message => message.role === 'user' || message.role === 'ai')
+      .slice(-8)
       .map(message => ({
         role: message.role === 'ai' ? 'assistant' as const : 'user' as const,
-        content: message.content
+        content: message.content.slice(0, MAX_MESSAGE_CHARACTERS)
       }))
 
     const aiMessageId = createId()
@@ -436,12 +454,9 @@ const TerminalResume = () => {
 
     try {
       setIsProcessing(true)
-      const responseText = await streamAIResponse(userText, historyForServer, aiMessageId)
-      if (audioEnabled && responseText.trim().length > 0) {
-        await generateSpeech(responseText)
-      }
-    } catch (error: any) {
-      const fallbackContent = typeof error?.message === 'string' ? error.message : 'Had trouble responding just now. Try again in a moment.'
+      await streamAIResponse(userText, historyForServer, aiMessageId)
+    } catch (error: unknown) {
+      const fallbackContent = errorMessage(error, 'Had trouble responding just now. Try again in a moment.')
       replaceMessage(aiMessageId, () => ({
         id: aiMessageId,
         role: 'system',
@@ -453,10 +468,10 @@ const TerminalResume = () => {
     }
   }
 
-  const handleInputKeyDown = async (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+  const handleInputKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       event.preventDefault()
-      await handleSubmit(event as unknown as React.FormEvent<HTMLFormElement>)
+      event.currentTarget.form?.requestSubmit()
     }
   }
 
@@ -505,26 +520,6 @@ const TerminalResume = () => {
     const trimmed = fullText.trim()
     replaceMessage(messageId, current => ({ ...current, content: trimmed, isMarkdown: true }))
     return trimmed
-  }
-
-  const generateSpeech = async (text: string) => {
-    try {
-      const response = await fetch('/api/speech', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
-      })
-      if (!response.ok) return
-      const arrayBuffer = await response.arrayBuffer()
-      const blob = new Blob([arrayBuffer], { type: 'audio/mpeg' })
-      if (audioRef.current) {
-        audioRef.current.src = URL.createObjectURL(blob)
-        setIsPlaying(true)
-        await audioRef.current.play()
-      }
-    } catch (error) {
-      console.error('Text-to-speech failed', error)
-    }
   }
 
   const renderMessage = (message: Message) => {
@@ -629,7 +624,11 @@ const TerminalResume = () => {
       disabled={isProcessing}
     >
       <span className="flex items-start gap-2 text-[11px] uppercase leading-snug tracking-[0.04em]"><span className="mt-px text-[#ffbd66]/45">&gt;</span>{item.title}</span>
-      {item.metadata?.period && <span className="ml-4 mt-1 block text-[8px] uppercase tracking-wider text-[#80ff96]/25">{item.metadata.period}</span>}
+      {metadataText(item.metadata, 'period') && (
+        <span className="ml-4 mt-1 block text-[8px] uppercase tracking-wider text-[#80ff96]/25">
+          {metadataText(item.metadata, 'period')}
+        </span>
+      )}
     </button>
   ) : null
 
@@ -683,7 +682,7 @@ const TerminalResume = () => {
               </div>
               <div className="flex items-center gap-3 text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/30">
                 <span className="hidden sm:inline">SESSION 83-A</span>
-                <span className="flex items-center gap-2 border border-[#80ff96]/15 px-3 py-1.5 text-[#80ff96]/72"><span className="terminal-status-light" /> ONLINE</span>
+                <span className="flex items-center gap-2 border border-[#80ff96]/15 px-3 py-1.5 text-[#80ff96]/72"><span className="terminal-status-light" /> AI REPRESENTATION</span>
               </div>
             </div>
           </div>
@@ -707,8 +706,9 @@ const TerminalResume = () => {
                       if (document.activeElement === textarea) rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'SEARCHING DATA BANKS…' : 'ENTER QUERY OR COMMAND'}
+                  placeholder={isProcessing ? 'SEARCHING DATA BANKS…' : 'ASK THE AI ABOUT JOSHUA'}
                   aria-label="Enter portfolio query or command"
+                  maxLength={MAX_MESSAGE_CHARACTERS}
                   className="min-h-[36px] flex-1 resize-none bg-transparent py-1 text-base uppercase leading-6 tracking-[0.04em] text-[#80ff96] outline-none placeholder:text-[#80ff96]/25 sm:text-sm"
                   rows={1}
                   disabled={isProcessing}
@@ -718,7 +718,7 @@ const TerminalResume = () => {
                 </button>
               </div>
               <div className="mt-2 flex items-center justify-between px-1 text-[8px] uppercase tracking-[0.14em] text-[#80ff96]/24">
-                <span>{isProcessing ? 'PROCESSING REQUEST…' : 'TYPE “HELLO JOSHUA” FOR ALTERNATE ACCESS'}</span>
+                <span>{isProcessing ? 'PROCESSING REQUEST…' : 'AI REPRESENTATION / NOT JOSHUA LIVE · TYPE “HELLO JOSHUA” FOR ALTERNATE ACCESS'}</span>
                 <span className="hidden sm:block">ENTER / EXECUTE · SHIFT+ENTER / NEW LINE</span>
               </div>
             </div>
@@ -728,7 +728,7 @@ const TerminalResume = () => {
 
       {isMobileNavOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-[#010302]/90" onClick={() => setIsMobileNavOpen(false)} />
+          <button type="button" className="absolute inset-0 bg-[#010302]/90" onClick={() => setIsMobileNavOpen(false)} aria-label="Close navigation" />
           <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-[#80ff96]/25 bg-[#030805] p-4">
             <div className="mb-6 flex items-center justify-between border-b border-[#80ff96]/15 pb-4">
               <div><span className="block text-[10px] uppercase tracking-[0.2em] text-[#ffbd66]">COMMAND DIRECTORY</span><span className="mt-1 block text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/30">SELECT DATA CLASS</span></div>
@@ -750,12 +750,6 @@ const TerminalResume = () => {
         <JoshuaTerminal onClose={() => setIsJoshuaTerminalOpen(false)} />
       ) : null}
 
-      <audio
-        ref={audioRef}
-        onEnded={() => setIsPlaying(false)}
-        onError={() => setIsPlaying(false)}
-        className="hidden"
-      />
     </div>
   )
 }

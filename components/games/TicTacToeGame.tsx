@@ -60,12 +60,11 @@ interface TicTacToeGameProps {
 export default function TicTacToeGame({ onBack }: TicTacToeGameProps) {
   const [board, setBoard] = useState<Mark[]>(() => [...EMPTY_BOARD])
   const [turn, setTurn] = useState<'X' | 'O'>('X')
-  const [isThinking, setIsThinking] = useState(false)
   const result = useMemo(() => getBoardResult(board), [board])
+  const isThinking = turn === 'O' && !result
 
   useEffect(() => {
     if (turn !== 'O' || result) return
-    setIsThinking(true)
     const timer = window.setTimeout(() => {
       setBoard(current => {
         const move = getJoshuaMove(current)
@@ -75,7 +74,6 @@ export default function TicTacToeGame({ onBack }: TicTacToeGameProps) {
         return next
       })
       setTurn('X')
-      setIsThinking(false)
     }, 420)
     return () => window.clearTimeout(timer)
   }, [result, turn])
@@ -83,7 +81,6 @@ export default function TicTacToeGame({ onBack }: TicTacToeGameProps) {
   const restart = () => {
     setBoard([...EMPTY_BOARD])
     setTurn('X')
-    setIsThinking(false)
   }
 
   const play = (index: number) => {
