@@ -2,34 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Two looks live in this stylesheet, on purpose.
+
+   The MAIN SURFACE is the cora family look: ember ground, warm ink, family
+   amber, Fraunces over IBM Plex over JetBrains Mono. Calm, readable, no glow.
+
+   The WAR GAMES look — green phosphor, scanlines, CRT bloom — survives ONLY
+   inside the easter-egg terminal (`.joshua-*`, `.maze-*`, further down this
+   file). Nothing on the main surface hints at how to reach it. */
+
 :root {
   color-scheme: dark;
-  --void: #020603;
-  --glass: #040a06;
+
+  /* ground */
+  --ground: #232120;
+  --panel: #2b2826;
+  --surface: #302c29;
+
+  /* ink */
+  --ink: #e4dfd5;
+  --ink-mid: rgba(245, 241, 234, 0.78);
+  --ink-dim: rgba(245, 241, 234, 0.58);
+  --ink-faint: rgba(245, 241, 234, 0.42);
+  --ink-ghost: rgba(245, 241, 234, 0.26);
+
+  /* lines */
+  --line: rgba(245, 241, 234, 0.12);
+  --line-subtle: rgba(245, 241, 234, 0.065);
+
+  /* family amber */
+  --amber: #e0b25a;
+  --amber-hover: #ebc47a;
+  --amber-veil: rgba(224, 178, 90, 0.055);
+  --amber-edge: rgba(224, 178, 90, 0.3);
+
+  --alert: #b87952;
+
+  /* the easter egg's palette, kept separate */
   --phosphor: #80ff96;
-  --amber: #ffbd66;
-  --alert: #ff5f57;
+  --phosphor-amber: #ffbd66;
+  --void: #020603;
 }
 
 @layer base {
   * { box-sizing: border-box; }
 
-  html { background: var(--void); }
+  html { background: var(--ground); }
 
   body {
     min-height: 100vh;
     margin: 0;
-    background: var(--void);
-    color: var(--phosphor);
-    font-family: ui-monospace, "SFMono-Regular", Menlo, Monaco, Consolas, monospace;
-    letter-spacing: 0.035em;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--font-ibm-plex), ui-sans-serif, system-ui, sans-serif;
+    letter-spacing: 0;
+    -webkit-font-smoothing: antialiased;
   }
 
   button, textarea { font: inherit; }
 
   ::selection {
-    background: rgba(128, 255, 150, 0.22);
-    color: #d9ffe0;
+    background: rgba(224, 178, 90, 0.24);
+    color: #f5f1ea;
   }
 
   :focus-visible {
@@ -39,29 +73,15 @@
 }
 
 @layer utilities {
+  /* the main surface — warm, matte, no CRT */
   .wargames-shell {
     position: relative;
     isolation: isolate;
     background:
-      radial-gradient(ellipse at 58% 42%, rgba(128, 255, 150, 0.042), transparent 48%),
-      var(--void);
-    text-shadow: 0 0 8px rgba(128, 255, 150, 0.22);
+      radial-gradient(ellipse at 58% 34%, rgba(224, 178, 90, 0.035), transparent 58%),
+      var(--ground);
   }
 
-  .wargames-shell::before {
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    content: "";
-    pointer-events: none;
-    opacity: 0.2;
-    background-image:
-      linear-gradient(rgba(128, 255, 150, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(128, 255, 150, 0.045) 1px, transparent 1px);
-    background-size: 44px 44px;
-  }
-
-  .wargames-scanlines,
   .joshua-scanlines {
     position: fixed;
     inset: 0;
@@ -72,7 +92,6 @@
     background-image: repeating-linear-gradient(to bottom, transparent 0, transparent 3px, rgba(128, 255, 150, 0.055) 4px);
   }
 
-  .wargames-scanlines::after,
   .joshua-scanlines::after {
     position: absolute;
     top: -18%;
@@ -90,6 +109,12 @@
     height: 0.38rem;
     flex: none;
     border-radius: 50%;
+    background: var(--amber);
+    box-shadow: 0 0 8px rgba(224, 178, 90, 0.5);
+    animation: status-pulse 4s ease-in-out infinite;
+  }
+
+  .joshua-terminal .terminal-status-light {
     background: var(--phosphor);
     box-shadow: 0 0 10px rgba(128, 255, 150, 0.9);
     animation: status-pulse 2.4s steps(2, end) infinite;
@@ -101,134 +126,146 @@
     align-items: center;
     gap: 0.75rem;
     border: 1px solid transparent;
-    border-left-color: rgba(128, 255, 150, 0.12);
+    border-left-color: var(--line-subtle);
+    border-radius: 6px;
     padding: 0.68rem 0.75rem;
     text-align: left;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
     font-size: 0.66rem;
     line-height: 1rem;
-    letter-spacing: 0.13em;
-    color: rgba(128, 255, 150, 0.52);
+    letter-spacing: 0.11em;
+    color: var(--ink-dim);
     transition: 140ms ease;
   }
 
   .terminal-nav-item:hover,
   .terminal-nav-item-active {
-    border-color: rgba(128, 255, 150, 0.28);
+    border-color: var(--line);
     border-left-color: var(--amber);
-    background: rgba(128, 255, 150, 0.045);
-    color: var(--phosphor);
+    background: var(--amber-veil);
+    color: var(--ink);
   }
 
   .terminal-hero {
     position: relative;
-    min-height: min(38rem, 70vh);
+    min-height: min(34rem, 66vh);
     overflow: hidden;
-    border: 1px solid rgba(128, 255, 150, 0.23);
-    border-left: 3px solid rgba(128, 255, 150, 0.68);
-    background: rgba(3, 9, 5, 0.74);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber-edge);
+    border-radius: 8px;
+    background: var(--panel);
     padding: clamp(1.5rem, 5vw, 4.5rem);
-  }
-
-  .terminal-hero::after {
-    position: absolute;
-    right: 2rem;
-    bottom: 1.6rem;
-    content: "83-A";
-    font-size: clamp(4rem, 10vw, 9rem);
-    line-height: 1;
-    color: rgba(128, 255, 150, 0.025);
-    pointer-events: none;
   }
 
   .terminal-hero-grid {
     position: absolute;
     inset: 0;
     pointer-events: none;
-    opacity: 0.22;
-    background-image:
-      linear-gradient(rgba(128, 255, 150, 0.07) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(128, 255, 150, 0.055) 1px, transparent 1px);
-    background-size: 32px 32px;
-    mask-image: linear-gradient(115deg, transparent 28%, black 100%);
+    opacity: 0.5;
+    background: radial-gradient(ellipse at 88% 8%, rgba(224, 178, 90, 0.06), transparent 62%);
   }
 
   .terminal-hero-title {
-    font-size: clamp(3.2rem, 10vw, 8.6rem);
-    line-height: 0.82;
-    letter-spacing: -0.075em;
-    color: var(--phosphor);
-    text-shadow: 0 0 8px rgba(128, 255, 150, 0.42), 0 0 30px rgba(128, 255, 150, 0.08);
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-size: clamp(2.9rem, 8vw, 6.4rem);
+    font-weight: 400;
+    line-height: 0.94;
+    letter-spacing: -0.03em;
+    color: var(--ink);
   }
 
   .terminal-primary-action,
   .terminal-secondary-action {
-    border: 1px solid rgba(128, 255, 150, 0.32);
-    padding: 0.78rem 1rem;
-    font-size: 0.65rem;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0.78rem 1.1rem;
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.68rem;
     line-height: 1rem;
-    letter-spacing: 0.13em;
-    color: rgba(128, 255, 150, 0.78);
+    letter-spacing: 0.11em;
+    color: var(--ink-mid);
     transition: 140ms ease;
   }
 
   .terminal-primary-action {
-    border-color: rgba(255, 189, 102, 0.7);
+    border-color: var(--amber-edge);
+    background: var(--amber-veil);
     color: var(--amber);
   }
 
   .terminal-primary-action:hover,
   .terminal-secondary-action:hover {
-    background: rgba(128, 255, 150, 0.08);
-    border-color: var(--phosphor);
-    color: var(--phosphor);
+    background: rgba(245, 241, 234, 0.05);
+    border-color: var(--amber);
+    color: var(--amber-hover);
   }
 
   .terminal-record {
     position: relative;
-    border: 1px solid rgba(128, 255, 150, 0.2);
-    border-left: 3px solid rgba(128, 255, 150, 0.55);
-    background: rgba(3, 9, 5, 0.72);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber-edge);
+    border-radius: 8px;
+    background: var(--panel);
     padding: clamp(1.25rem, 3vw, 2rem);
   }
 
   .terminal-user-message {
-    border: 1px solid rgba(255, 189, 102, 0.42);
-    background: rgba(255, 189, 102, 0.05);
-    padding: 0.85rem 1rem;
+    border: 1px solid var(--amber-edge);
+    border-radius: 8px;
+    background: var(--amber-veil);
+    padding: 0.85rem 1.1rem;
     color: var(--amber);
   }
 
-  .terminal-prose { color: rgba(128, 255, 150, 0.68); }
-  .terminal-prose :where(p, li) { color: rgba(128, 255, 150, 0.68); line-height: 1.8; }
-  .terminal-prose :where(h1, h2, h3, strong) { color: var(--phosphor); }
-  .terminal-prose :where(a) { color: var(--amber); text-decoration-color: rgba(255, 189, 102, 0.45); }
-  .terminal-prose :where(a:hover) { color: var(--phosphor); }
-  .terminal-prose :where(li)::marker { color: rgba(255, 189, 102, 0.72); }
+  .terminal-prose { color: var(--ink-mid); font-size: 1rem; }
+  .terminal-prose :where(p, li) { color: var(--ink-mid); line-height: 1.75; }
+  .terminal-prose :where(h1, h2, h3) {
+    font-family: var(--font-fraunces), ui-serif, Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+  .terminal-prose :where(strong) { color: var(--ink); font-weight: 600; }
+  .terminal-prose :where(a) { color: var(--amber); text-decoration-color: var(--amber-edge); }
+  .terminal-prose :where(a:hover) { color: var(--amber-hover); }
+  .terminal-prose :where(li)::marker { color: var(--amber-edge); }
+  .terminal-prose :where(code) {
+    font-family: var(--font-jetbrains), ui-monospace, monospace;
+    font-size: 0.86em;
+    color: var(--ink);
+  }
 
   .terminal-command-line {
-    border: 1px solid rgba(128, 255, 150, 0.22);
-    border-left: 3px solid rgba(255, 189, 102, 0.66);
-    background: rgba(4, 10, 6, 0.88);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--amber-edge);
+    border-radius: 6px;
+    background: var(--surface);
     padding: 0.55rem 0.65rem 0.55rem 0.9rem;
     transition: 140ms ease;
   }
 
   .terminal-command-line:focus-within {
-    border-color: rgba(128, 255, 150, 0.66);
+    border-color: var(--line);
     border-left-color: var(--amber);
-    box-shadow: 0 0 18px rgba(128, 255, 150, 0.055);
+    box-shadow: 0 0 0 1px var(--amber-veil);
   }
 
-  .fine-scrollbar,
+  .fine-scrollbar {
+    scrollbar-color: rgba(245, 241, 234, 0.18) transparent;
+    scrollbar-width: thin;
+  }
+
   .joshua-terminal {
     scrollbar-color: rgba(128, 255, 150, 0.26) transparent;
     scrollbar-width: thin;
   }
 
   .fine-scrollbar::-webkit-scrollbar { width: 5px; }
-  .fine-scrollbar::-webkit-scrollbar-thumb { background: rgba(128, 255, 150, 0.22); }
+  .fine-scrollbar::-webkit-scrollbar-thumb { background: rgba(245, 241, 234, 0.16); }
 
+  /* --- the easter egg, from here down: WAR GAMES, unchanged --- */
   .joshua-terminal {
+    font-family: var(--font-jetbrains), ui-monospace, "SFMono-Regular", Menlo, monospace;
     letter-spacing: 0.045em;
     text-shadow: 0 0 8px rgba(128, 255, 150, 0.32);
   }
@@ -644,8 +681,8 @@
 
   @media (max-width: 640px) {
     .terminal-hero { min-height: auto; }
-    .terminal-hero-title { font-size: clamp(3.1rem, 17vw, 5rem); }
-    .wargames-scanlines, .joshua-scanlines { opacity: 0.2; }
+    .terminal-hero-title { font-size: clamp(2.7rem, 13vw, 4.2rem); }
+    .joshua-scanlines { opacity: 0.2; }
   }
 
   @media (prefers-reduced-motion: reduce) {
