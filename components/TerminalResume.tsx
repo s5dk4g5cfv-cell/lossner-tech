@@ -3,8 +3,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import dynamic from 'next/dynamic'
+import VideoEmbed from './VideoEmbed'
 
 const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
+
+const FEATURED_VIDEO = { id: 'wH0ac0I13mI', title: 'CORA — a walkthrough' }
 
 type MessageRole = 'system' | 'user' | 'ai'
 
@@ -16,6 +19,8 @@ type Message = {
   title?: string
   isMarkdown?: boolean
   meta?: string
+  videoId?: string
+  videoTitle?: string
 }
 
 type ContentItem = {
@@ -242,7 +247,7 @@ const TerminalResume = () => {
     try {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
-      const m = item.metadata ?? {}
+      const m = { ...(item.metadata ?? {}), ...(data.metadata ?? {}) }
       const metaParts = [
         m.company,
         m.role,
@@ -256,7 +261,9 @@ const TerminalResume = () => {
         title: data.title ?? item.title,
         content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
-        meta: metaParts.join(' · ') || undefined
+        meta: metaParts.join(' · ') || undefined,
+        videoId: typeof m.video === 'string' ? m.video : undefined,
+        videoTitle: typeof m.videoTitle === 'string' ? m.videoTitle : undefined
       })
       if (audioEnabled && data.content) {
         await generateSpeech(data.content)
@@ -537,41 +544,50 @@ const TerminalResume = () => {
       return (
         <section key={message.id} data-message-id={message.id} className="terminal-hero">
           <div className="terminal-hero-grid" aria-hidden="true" />
-          <div className="relative z-10 max-w-5xl">
-            <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[#e4dfd5]/42">
+          <div className="relative z-10 max-w-6xl">
+            <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[#e4dfd5]/42">
               <span className="flex items-center gap-2 text-[#e4dfd5]/72"><span className="terminal-status-light" /> Online</span>
               <span>Des Moines, Iowa</span>
               <span>Public access</span>
             </div>
-            <p className="mb-5 font-mono text-[10px] uppercase tracking-[0.28em] text-[#e0b25a]">Personal data system</p>
-            <h2 className="terminal-hero-title">Greetings.</h2>
-            <p className="mt-7 max-w-2xl text-base leading-[1.75] text-[#e4dfd5]/78 sm:text-lg sm:leading-[1.75]">{message.content}</p>
-            <div className="mt-9 flex flex-wrap gap-2">
-              {projectsSection && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await handleSectionSelect(projectsSection)
-                    if (window.innerWidth < 1024) setIsMobileNavOpen(true)
-                  }}
-                  className="terminal-primary-action"
-                >
-                  Project files
-                </button>
-              )}
-              {aboutSection && (
-                <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
-                  About Joshua
-                </button>
-              )}
+            <div className="grid items-center gap-x-12 gap-y-9 lg:grid-cols-[1fr_1.05fr]">
+              <div>
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.28em] text-[#e0b25a]">Personal data system</p>
+                <h2 className="terminal-hero-title">Greetings.</h2>
+                <p className="mt-5 max-w-xl text-[15px] leading-[1.7] text-[#e4dfd5]/78 sm:text-base sm:leading-[1.7]">{message.content}</p>
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {projectsSection && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await handleSectionSelect(projectsSection)
+                        if (window.innerWidth < 1024) setIsMobileNavOpen(true)
+                      }}
+                      className="terminal-primary-action"
+                    >
+                      Project files
+                    </button>
+                  )}
+                  {aboutSection && (
+                    <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
+                      About Joshua
+                    </button>
+                  )}
+                </div>
+              </div>
+              <VideoEmbed
+                id={FEATURED_VIDEO.id}
+                title={FEATURED_VIDEO.title}
+                label="Featured"
+              />
             </div>
-            <div className="mt-12 grid max-w-3xl overflow-hidden rounded-lg border border-[#e4dfd5]/12 sm:grid-cols-3">
+            <div className="mt-10 grid overflow-hidden rounded-lg border border-[#e4dfd5]/12 sm:grid-cols-3">
               {[
                 ['4', 'Employers / 33 years'],
                 ['7', 'Core technical domains'],
                 ['25+', 'Platforms & tools'],
               ].map(([value, label]) => (
-                <div key={label} className="border-b border-[#e4dfd5]/10 px-5 py-4 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+                <div key={label} className="border-b border-[#e4dfd5]/10 px-5 py-3.5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
                   <p className="font-serif text-2xl text-[#e0b25a]">{value}</p>
                   <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#e4dfd5]/42">{label}</p>
                 </div>
@@ -589,6 +605,13 @@ const TerminalResume = () => {
             {message.heading && <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e0b25a]">{message.heading}</p>}
             {message.title && <h2 className="mb-2 max-w-3xl font-serif text-2xl font-normal leading-tight tracking-[-0.015em] text-[#e4dfd5] sm:text-3xl">{message.title}</h2>}
             {message.meta && <p className="mb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/42">{message.meta}</p>}
+            {message.videoId && (
+              <VideoEmbed
+                id={message.videoId}
+                title={message.videoTitle ?? message.title ?? 'Video'}
+                className="mb-7 max-w-3xl"
+              />
+            )}
             {message.isMarkdown ? (
               <div className="prose terminal-prose max-w-none"><ReactMarkdown>{message.content}</ReactMarkdown></div>
             ) : (
