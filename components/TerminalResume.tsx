@@ -3,8 +3,11 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import dynamic from 'next/dynamic'
+import VideoEmbed from './VideoEmbed'
 
 const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
+
+const FEATURED_VIDEO = { id: 'wH0ac0I13mI', title: 'CORA — a walkthrough' }
 
 type MessageRole = 'system' | 'user' | 'ai'
 
@@ -16,6 +19,8 @@ type Message = {
   title?: string
   isMarkdown?: boolean
   meta?: string
+  videoId?: string
+  videoTitle?: string
 }
 
 type ContentItem = {
@@ -242,7 +247,7 @@ const TerminalResume = () => {
     try {
       setIsProcessing(true)
       const data = await fetchFileContent(section.directory, item.filename)
-      const m = item.metadata ?? {}
+      const m = { ...(item.metadata ?? {}), ...(data.metadata ?? {}) }
       const metaParts = [
         m.company,
         m.role,
@@ -256,7 +261,9 @@ const TerminalResume = () => {
         title: data.title ?? item.title,
         content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
-        meta: metaParts.join(' · ') || undefined
+        meta: metaParts.join(' · ') || undefined,
+        videoId: typeof m.video === 'string' ? m.video : undefined,
+        videoTitle: typeof m.videoTitle === 'string' ? m.videoTitle : undefined
       })
       if (audioEnabled && data.content) {
         await generateSpeech(data.content)
@@ -537,43 +544,52 @@ const TerminalResume = () => {
       return (
         <section key={message.id} data-message-id={message.id} className="terminal-hero">
           <div className="terminal-hero-grid" aria-hidden="true" />
-          <div className="relative z-10 max-w-5xl">
-            <div className="mb-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-[9px] uppercase tracking-[0.24em] text-[#80ff96]/45">
-              <span className="flex items-center gap-2 text-[#80ff96]"><span className="terminal-status-light" /> LINK ESTABLISHED</span>
-              <span>NODE: DES MOINES / IA</span>
-              <span>ACCESS: PUBLIC</span>
+          <div className="relative z-10 max-w-6xl">
+            <div className="mb-6 flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[9px] uppercase tracking-[0.2em] text-[#e4dfd5]/42">
+              <span className="flex items-center gap-2 text-[#e4dfd5]/72"><span className="terminal-status-light" /> Online</span>
+              <span>Des Moines, Iowa</span>
+              <span>Public access</span>
             </div>
-            <p className="mb-4 text-[10px] uppercase tracking-[0.32em] text-[#ffbd66]">PERSONAL DATA SYSTEM / ONLINE</p>
-            <h2 className="terminal-hero-title">GREETINGS.</h2>
-            <p className="mt-7 max-w-3xl text-sm uppercase leading-7 tracking-[0.06em] text-[#80ff96]/72 sm:text-base sm:leading-8">{message.content}</p>
-            <div className="mt-9 flex flex-wrap gap-2">
-              {projectsSection && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    await handleSectionSelect(projectsSection)
-                    if (window.innerWidth < 1024) setIsMobileNavOpen(true)
-                  }}
-                  className="terminal-primary-action"
-                >
-                  [ ACCESS PROJECT FILES ]
-                </button>
-              )}
-              {aboutSection && (
-                <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
-                  [ IDENTIFY OPERATOR ]
-                </button>
-              )}
+            <div className="grid items-center gap-x-12 gap-y-9 lg:grid-cols-[1fr_1.05fr]">
+              <div>
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.28em] text-[#e0b25a]">Personal data system</p>
+                <h2 className="terminal-hero-title">Greetings.</h2>
+                <p className="mt-5 max-w-xl text-[15px] leading-[1.7] text-[#e4dfd5]/78 sm:text-base sm:leading-[1.7]">{message.content}</p>
+                <div className="mt-7 flex flex-wrap gap-2">
+                  {projectsSection && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await handleSectionSelect(projectsSection)
+                        if (window.innerWidth < 1024) setIsMobileNavOpen(true)
+                      }}
+                      className="terminal-primary-action"
+                    >
+                      Project files
+                    </button>
+                  )}
+                  {aboutSection && (
+                    <button type="button" onClick={() => handleSectionSelect(aboutSection)} className="terminal-secondary-action">
+                      About Joshua
+                    </button>
+                  )}
+                </div>
+              </div>
+              <VideoEmbed
+                id={FEATURED_VIDEO.id}
+                title={FEATURED_VIDEO.title}
+                label="Featured"
+              />
             </div>
-            <div className="mt-12 grid max-w-3xl border-l border-t border-[#80ff96]/20 sm:grid-cols-3">
+            <div className="mt-10 grid overflow-hidden rounded-lg border border-[#e4dfd5]/12 sm:grid-cols-3">
               {[
-                ['4', 'EMPLOYERS / 33 YEARS'],
-                ['7', 'CORE TECHNICAL DOMAINS'],
-                ['25+', 'PLATFORMS & TOOLS'],
+                ['4', 'Employers / 33 years'],
+                ['7', 'Core technical domains'],
+                ['25+', 'Platforms & tools'],
               ].map(([value, label]) => (
-                <div key={label} className="border-b border-r border-[#80ff96]/20 bg-[#80ff96]/[0.025] px-5 py-4">
-                  <p className="text-xl text-[#ffbd66]">{value}</p>
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/42">{label}</p>
+                <div key={label} className="border-b border-[#e4dfd5]/10 px-5 py-3.5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0">
+                  <p className="font-serif text-2xl text-[#e0b25a]">{value}</p>
+                  <p className="mt-1 font-mono text-[9px] uppercase tracking-[0.16em] text-[#e4dfd5]/42">{label}</p>
                 </div>
               ))}
             </div>
@@ -586,13 +602,20 @@ const TerminalResume = () => {
       <div key={message.id} data-message-id={message.id} className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}>
         <div className={isUser ? 'max-w-2xl' : 'w-full max-w-5xl'}>
           <article className={isUser ? 'terminal-user-message' : 'terminal-record'}>
-            {message.heading && <p className="mb-3 text-[9px] uppercase tracking-[0.26em] text-[#ffbd66]">{'>'} DIRECTORY / {message.heading}</p>}
-            {message.title && <h2 className="mb-2 max-w-3xl text-xl uppercase leading-tight tracking-[0.04em] text-[#80ff96] sm:text-2xl">{message.title}</h2>}
-            {message.meta && <p className="mb-5 text-[9px] uppercase tracking-[0.16em] text-[#80ff96]/42">{message.meta}</p>}
+            {message.heading && <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e0b25a]">{message.heading}</p>}
+            {message.title && <h2 className="mb-2 max-w-3xl font-serif text-2xl font-normal leading-tight tracking-[-0.015em] text-[#e4dfd5] sm:text-3xl">{message.title}</h2>}
+            {message.meta && <p className="mb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/42">{message.meta}</p>}
+            {message.videoId && (
+              <VideoEmbed
+                id={message.videoId}
+                title={message.videoTitle ?? message.title ?? 'Video'}
+                className="mb-7 max-w-3xl"
+              />
+            )}
             {message.isMarkdown ? (
               <div className="prose terminal-prose max-w-none"><ReactMarkdown>{message.content}</ReactMarkdown></div>
             ) : (
-              <p className="whitespace-pre-line text-sm uppercase leading-6 tracking-[0.04em]">{message.content}</p>
+              <p className="whitespace-pre-line text-[15px] leading-[1.7] text-[#e4dfd5]/78">{message.content}</p>
             )}
           </article>
         </div>
@@ -613,9 +636,9 @@ const TerminalResume = () => {
         aria-current={isSelected ? 'page' : undefined}
         className={`terminal-nav-item ${isSelected ? 'terminal-nav-item-active' : ''}`}
       >
-        <span className={isSelected ? 'text-[#ffbd66]' : 'text-[#80ff96]/32'}>{NAV_CODES[section.id]}</span>
-        <span>{section.label.toUpperCase()}</span>
-        <span className="ml-auto opacity-30">{isSelected ? '◼' : '>'}</span>
+        <span className={isSelected ? 'text-[#e0b25a]' : 'text-[#e4dfd5]/28'}>{NAV_CODES[section.id]}</span>
+        <span className="font-sans text-[13px] tracking-normal">{section.label}</span>
+        <span className="ml-auto text-[10px] opacity-25">{isSelected ? '●' : ''}</span>
       </button>
     )
   }
@@ -625,65 +648,62 @@ const TerminalResume = () => {
       key={item.id}
       type="button"
       onClick={() => handleItemSelect(selectedSection, item)}
-      className="group w-full border-l border-transparent px-3 py-2.5 text-left text-[#80ff96]/58 transition hover:border-[#ffbd66] hover:bg-[#80ff96]/[0.04] hover:text-[#80ff96]"
+      className="group w-full rounded-md border-l-2 border-transparent px-3 py-2.5 text-left text-[#e4dfd5]/58 transition hover:border-[#e0b25a] hover:bg-[#e0b25a]/[0.055] hover:text-[#e4dfd5]"
       disabled={isProcessing}
     >
-      <span className="flex items-start gap-2 text-[11px] uppercase leading-snug tracking-[0.04em]"><span className="mt-px text-[#ffbd66]/45">&gt;</span>{item.title}</span>
-      {item.metadata?.period && <span className="ml-4 mt-1 block text-[8px] uppercase tracking-wider text-[#80ff96]/25">{item.metadata.period}</span>}
+      <span className="block text-[13px] leading-snug">{item.title}</span>
+      {item.metadata?.period && <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-[#e4dfd5]/32">{item.metadata.period}</span>}
     </button>
   ) : null
 
   return (
-    <div ref={rootRef} className="wargames-shell flex h-[100dvh] overflow-hidden text-[#80ff96]">
-      <div className="wargames-scanlines" aria-hidden="true" />
-      <aside className="relative z-10 hidden w-[286px] flex-shrink-0 border-r border-[#80ff96]/20 bg-[#030805]/95 lg:flex">
+    <div ref={rootRef} className="wargames-shell flex h-[100dvh] overflow-hidden text-[#e4dfd5]">
+      <aside className="relative z-10 hidden w-[286px] flex-shrink-0 border-r border-[#e4dfd5]/12 bg-[#2b2826] lg:flex">
         <div className="flex h-full w-full flex-col overflow-hidden">
-          <div className="border-b border-[#80ff96]/20 px-5 py-5">
-            <p className="text-[9px] uppercase tracking-[0.28em] text-[#ffbd66]">COMMAND DIRECTORY</p>
-            <p className="mt-2 text-[9px] tracking-[0.12em] text-[#80ff96]/38">SELECT DATA CLASS</p>
+          <div className="border-b border-[#e4dfd5]/10 px-5 py-5">
+            <p className="font-mono text-[9px] uppercase tracking-[0.24em] text-[#e0b25a]">Directory</p>
+            <p className="mt-2 text-[12px] text-[#e4dfd5]/45">Pick a place to start</p>
           </div>
           <div className="flex flex-1 flex-col overflow-hidden">
-            <p className="px-5 pb-2 pt-5 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <p className="px-5 pb-2 pt-5 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e4dfd5]/28">Sections</p>
             <div className="flex-none space-y-1 px-2 pb-4">{leftNavSections.map(renderDesktopSectionButton)}</div>
             {selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="fine-scrollbar flex-1 overflow-y-auto border-t border-[#80ff96]/15 pt-4">
+              <div className="fine-scrollbar flex-1 overflow-y-auto border-t border-[#e4dfd5]/10 pt-4">
                 <div className="flex items-center justify-between px-5 pb-2">
-                  <p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p>
-                  <span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#e4dfd5]/28">{selectedSection.label}</p>
+                  <span className="font-mono text-[9px] text-[#e4dfd5]/28">{selectedSection.items.length}</span>
                 </div>
                 <div className="space-y-1 px-2 pb-4">
-                  {selectedSection.loading && <p className="px-3 py-2 text-[10px] text-[#80ff96]/40">READING DIRECTORY…</p>}
-                  {selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#ff5f57]">{selectedSection.error}</p>}
+                  {selectedSection.loading && <p className="px-3 py-2 text-[12px] text-[#e4dfd5]/40">Loading…</p>}
+                  {selectedSection.error && <p className="px-3 py-2 text-[12px] text-[#b87952]">{selectedSection.error}</p>}
                   {selectedSection.items.map(renderRecordButton)}
-                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && <p className="px-3 py-2 text-[10px] text-[#80ff96]/35">NO RECORDS</p>}
+                  {selectedSection.items.length === 0 && !selectedSection.loading && !selectedSection.error && <p className="px-3 py-2 text-[12px] text-[#e4dfd5]/35">Nothing here yet</p>}
                 </div>
               </div>
             )}
           </div>
-          <div className="border-t border-[#80ff96]/15 px-5 py-4 text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/28">
-            <div className="flex items-center justify-between"><span>CARRIER</span><span className="flex items-center gap-2 text-[#80ff96]/75"><span className="terminal-status-light" /> ONLINE</span></div>
+          <div className="border-t border-[#e4dfd5]/10 px-5 py-4 font-mono text-[9px] uppercase tracking-[0.16em] text-[#e4dfd5]/30">
+            <div className="flex items-center justify-between"><span>lossner.tech</span><span className="flex items-center gap-2 text-[#e4dfd5]/55"><span className="terminal-status-light" /> Online</span></div>
           </div>
         </div>
       </aside>
 
       <div className="relative z-10 flex flex-1 flex-col overflow-hidden">
-        <header className="sticky top-0 z-40 border-b border-[#80ff96]/20 bg-[#020603]/94">
+        <header className="sticky top-0 z-40 border-b border-[#e4dfd5]/10 bg-[#232120]/94 backdrop-blur">
           <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3.5">
             <div className="flex items-center justify-between gap-3">
               <div className="flex items-center gap-3">
-                <button type="button" onClick={() => setIsMobileNavOpen(true)} className="border border-[#80ff96]/25 p-2 text-[#80ff96]/60 transition hover:border-[#80ff96] hover:text-[#80ff96] lg:hidden" aria-label="Open navigation"><MenuIcon /></button>
+                <button type="button" onClick={() => setIsMobileNavOpen(true)} className="rounded-md border border-[#e4dfd5]/15 p-2 text-[#e4dfd5]/60 transition hover:border-[#e0b25a] hover:text-[#e0b25a] lg:hidden" aria-label="Open navigation"><MenuIcon /></button>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[9px] uppercase tracking-[0.22em] text-[#ffbd66]">JOSHUA LOSSNER</span>
-                    <span className="text-[#80ff96]/18">{'//'}</span>
-                    <h1 className="text-[10px] uppercase tracking-[0.16em] text-[#80ff96] sm:text-xs">PERSONAL DATA SYSTEM</h1>
+                  <div className="flex items-baseline gap-2.5">
+                    <h1 className="font-serif text-base font-normal tracking-[-0.01em] text-[#e4dfd5]">Joshua Lossner</h1>
+                    <span className="hidden font-mono text-[9px] uppercase tracking-[0.18em] text-[#e0b25a] sm:inline">Personal data system</span>
                   </div>
-                  <p className="mt-1 hidden text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/28 sm:block">DEVOPS / AUTOMATION / HUMAN-AI SYSTEMS</p>
+                  <p className="mt-0.5 hidden text-[11px] text-[#e4dfd5]/38 sm:block">DevOps · automation · human-AI systems</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 text-[8px] uppercase tracking-[0.16em] text-[#80ff96]/30">
-                <span className="hidden sm:inline">SESSION 83-A</span>
-                <span className="flex items-center gap-2 border border-[#80ff96]/15 px-3 py-1.5 text-[#80ff96]/72"><span className="terminal-status-light" /> ONLINE</span>
+              <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/30">
+                <span className="flex items-center gap-2 rounded-md border border-[#e4dfd5]/10 px-3 py-1.5 text-[#e4dfd5]/55"><span className="terminal-status-light" /> Online</span>
               </div>
             </div>
           </div>
@@ -693,10 +713,10 @@ const TerminalResume = () => {
           <div ref={chatScrollRef} className="fine-scrollbar flex-1 overflow-y-auto">
             <div className="mx-auto w-full max-w-[1320px] space-y-6 px-[clamp(16px,4vw,64px)] py-5 lg:py-9">{messages.map(renderMessage)}<div ref={messagesEndRef} /></div>
           </div>
-          <form onSubmit={handleSubmit} className="flex-none border-t border-[#80ff96]/20 bg-[#020603]/96">
+          <form onSubmit={handleSubmit} className="flex-none border-t border-[#e4dfd5]/10 bg-[#232120]">
             <div className="mx-auto w-full max-w-[1320px] px-[clamp(16px,4vw,64px)] py-3">
               <div className="terminal-command-line group flex items-end gap-3">
-                <span className="mb-2 text-sm text-[#ffbd66]" aria-hidden="true">&gt;</span>
+                <span className="mb-2 text-sm text-[#e0b25a]" aria-hidden="true">&gt;</span>
                 <textarea
                   value={currentInput}
                   onChange={event => setCurrentInput(event.target.value)}
@@ -707,19 +727,19 @@ const TerminalResume = () => {
                       if (document.activeElement === textarea) rootRef.current?.querySelector('form')?.scrollIntoView({ behavior: 'smooth', block: 'end' })
                     }, 300)
                   }}
-                  placeholder={isProcessing ? 'SEARCHING DATA BANKS…' : 'ENTER QUERY OR COMMAND'}
+                  placeholder={isProcessing ? 'Thinking…' : 'Ask me anything about Joshua'}
                   aria-label="Enter portfolio query or command"
-                  className="min-h-[36px] flex-1 resize-none bg-transparent py-1 text-base uppercase leading-6 tracking-[0.04em] text-[#80ff96] outline-none placeholder:text-[#80ff96]/25 sm:text-sm"
+                  className="min-h-[36px] flex-1 resize-none bg-transparent py-1 text-base leading-6 text-[#e4dfd5] outline-none placeholder:text-[#e4dfd5]/28 sm:text-[15px]"
                   rows={1}
                   disabled={isProcessing}
                 />
-                <button type="submit" className="mb-0.5 flex h-9 w-10 flex-none items-center justify-center border border-[#80ff96]/30 bg-[#80ff96]/[0.04] text-[#80ff96] transition hover:border-[#ffbd66] hover:text-[#ffbd66] disabled:opacity-20" disabled={isProcessing || !currentInput.trim()} aria-label="Send message">
+                <button type="submit" className="mb-0.5 flex h-9 w-10 flex-none items-center justify-center rounded-md border border-[#e4dfd5]/15 bg-[#e4dfd5]/[0.03] text-[#e4dfd5]/70 transition hover:border-[#e0b25a] hover:text-[#e0b25a] disabled:opacity-20" disabled={isProcessing || !currentInput.trim()} aria-label="Send message">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4"><path d="M12 19V5" /><path d="m5 12 7-7 7 7" /></svg>
                 </button>
               </div>
-              <div className="mt-2 flex items-center justify-between px-1 text-[8px] uppercase tracking-[0.14em] text-[#80ff96]/24">
-                <span>{isProcessing ? 'PROCESSING REQUEST…' : 'TYPE “HELLO JOSHUA” FOR ALTERNATE ACCESS'}</span>
-                <span className="hidden sm:block">ENTER / EXECUTE · SHIFT+ENTER / NEW LINE</span>
+              <div className="mt-2 flex items-center justify-between px-1 font-mono text-[9px] uppercase tracking-[0.12em] text-[#e4dfd5]/24">
+                <span>{isProcessing ? 'Working…' : ''}</span>
+                <span className="hidden sm:block">Enter to send · Shift+Enter for a new line</span>
               </div>
             </div>
           </form>
@@ -728,17 +748,17 @@ const TerminalResume = () => {
 
       {isMobileNavOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
-          <div className="absolute inset-0 bg-[#010302]/90" onClick={() => setIsMobileNavOpen(false)} />
-          <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-[#80ff96]/25 bg-[#030805] p-4">
-            <div className="mb-6 flex items-center justify-between border-b border-[#80ff96]/15 pb-4">
-              <div><span className="block text-[10px] uppercase tracking-[0.2em] text-[#ffbd66]">COMMAND DIRECTORY</span><span className="mt-1 block text-[8px] uppercase tracking-[0.18em] text-[#80ff96]/30">SELECT DATA CLASS</span></div>
-              <button type="button" onClick={() => setIsMobileNavOpen(false)} className="border border-[#80ff96]/20 p-2 text-[#80ff96]/55 transition hover:border-[#80ff96] hover:text-[#80ff96]" aria-label="Close navigation"><CloseIcon /></button>
+          <div className="absolute inset-0 bg-[#1b1917]/90" onClick={() => setIsMobileNavOpen(false)} />
+          <div className="fine-scrollbar relative h-full w-[320px] max-w-[88vw] overflow-y-auto border-r border-[#e4dfd5]/12 bg-[#2b2826] p-4">
+            <div className="mb-6 flex items-center justify-between border-b border-[#e4dfd5]/10 pb-4">
+              <div><span className="block font-mono text-[10px] uppercase tracking-[0.2em] text-[#e0b25a]">Directory</span><span className="mt-1 block text-[12px] text-[#e4dfd5]/45">Pick a place to start</span></div>
+              <button type="button" onClick={() => setIsMobileNavOpen(false)} className="rounded-md border border-[#e4dfd5]/15 p-2 text-[#e4dfd5]/55 transition hover:border-[#e0b25a] hover:text-[#e0b25a]" aria-label="Close navigation"><CloseIcon /></button>
             </div>
-            <p className="mb-2 text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">INDEX / 07</p>
+            <p className="mb-2 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e4dfd5]/28">Sections</p>
             <div className="space-y-1">{leftNavSections.map(renderDesktopSectionButton)}</div>
             {selectedSection?.directory && selectedSection.action !== 'about' && (
-              <div className="mt-5 space-y-1 border-t border-[#80ff96]/15 pt-4">
-                <div className="mb-2 flex items-center justify-between"><p className="text-[8px] uppercase tracking-[0.28em] text-[#80ff96]/25">RECORDS</p><span className="text-[8px] text-[#80ff96]/25">{String(selectedSection.items.length).padStart(2, '0')}</span></div>
+              <div className="mt-5 space-y-1 border-t border-[#e4dfd5]/10 pt-4">
+                <div className="mb-2 flex items-center justify-between"><p className="font-mono text-[9px] uppercase tracking-[0.22em] text-[#e4dfd5]/28">{selectedSection.label}</p><span className="font-mono text-[9px] text-[#e4dfd5]/28">{selectedSection.items.length}</span></div>
                 {selectedSection.items.map(renderRecordButton)}
               </div>
             )}

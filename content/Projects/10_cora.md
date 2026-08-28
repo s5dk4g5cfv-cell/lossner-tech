@@ -4,6 +4,8 @@ company: Personal Project
 role: Creator & Operator
 timeline: 2025–Present
 tags: [ai, automation, human-ai collaboration]
+video: wH0ac0I13mI
+videoTitle: CORA — a walkthrough
 ---
 ## CORA — Coherent Operating & Reasoning Architecture
 **Personal Project:** ***2025–Present***
