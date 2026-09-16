@@ -7,7 +7,7 @@ tags:
 
 ## System Administration
 
-I don’t market myself as an infrastructure engineer, but I’ve spent years in the thick of systems work—managing application environments, tuning middleware, and automating deployments across Windows and UNIX stacks.
+I’ve spent years managing application environments, tuning middleware, and automating deployments across Windows and UNIX stacks. This operational experience helps me choose and configure tools with a clear understanding of how they will be supported, recovered, and used by the next person.
 
 ### Key Areas
 - **WebSphere ND (v5.1 – 8.0)**: Maintained and upgraded environments across 4-tier architectures (dev, integration, test, prod). Supported vendor and custom applications.

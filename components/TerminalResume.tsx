@@ -128,7 +128,7 @@ const TerminalResume = () => {
       id: createId(),
       role: 'system',
       heading: 'Welcome',
-      content: 'I turn complex systems into clear, durable infrastructure — from enterprise automation to human-AI collaboration.',
+      content: 'I’m an IT professional with a background in release management and DevOps. I connect systems, automate repeatable work, and build practical tools that help people deliver with confidence.',
     }])
   }, [])
 
@@ -287,9 +287,9 @@ const TerminalResume = () => {
     switch (action) {
       case 'contact': {
         const lines = [
-          '- Email: **joshua.c.lossner@icloud.com**  ',
+          '- Email: **joshua@lossner.tech**  ',
           '- LinkedIn: [linkedin.com/in/joshualossner](https://www.linkedin.com/in/joshualossner)  ',
-          '- GitHub: [github.com/joshua-lossner](https://github.com/joshua-lossner)'
+          '- GitHub: [github.com/s5dk4g5cfv-cell](https://github.com/s5dk4g5cfv-cell)'
         ]
 
         const messageId = createId()
@@ -552,8 +552,8 @@ const TerminalResume = () => {
             </div>
             <div className="grid items-center gap-x-12 gap-y-9 lg:grid-cols-[1fr_1.05fr]">
               <div>
-                <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.28em] text-[#e0b25a]">Personal data system</p>
-                <h2 className="terminal-hero-title">Greetings.</h2>
+                <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.28em] text-[#e0b25a]">IT professional &amp; toolsmith</p>
+                <h2 className="terminal-hero-title">Practical tools.<br />Reliable delivery.</h2>
                 <p className="mt-5 max-w-xl text-[15px] leading-[1.7] text-[#e4dfd5]/78 sm:text-base sm:leading-[1.7]">{message.content}</p>
                 <div className="mt-7 flex flex-wrap gap-2">
                   {projectsSection && (
@@ -697,9 +697,9 @@ const TerminalResume = () => {
                 <div>
                   <div className="flex items-baseline gap-2.5">
                     <h1 className="font-serif text-base font-normal tracking-[-0.01em] text-[#e4dfd5]">Joshua Lossner</h1>
-                    <span className="hidden font-mono text-[9px] uppercase tracking-[0.18em] text-[#e0b25a] sm:inline">Personal data system</span>
+                    <span className="hidden font-mono text-[9px] uppercase tracking-[0.18em] text-[#e0b25a] sm:inline">IT professional &amp; toolsmith</span>
                   </div>
-                  <p className="mt-0.5 hidden text-[11px] text-[#e4dfd5]/38 sm:block">DevOps · automation · human-AI systems</p>
+                  <p className="mt-0.5 hidden text-[11px] text-[#e4dfd5]/38 sm:block">Release management · DevOps · practical automation</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/30">

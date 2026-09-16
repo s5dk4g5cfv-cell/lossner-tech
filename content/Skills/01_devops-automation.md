@@ -7,7 +7,7 @@ tags:
 
 ## DevOps & Automation
 
-I’ve spent much of my career building, improving, and maintaining deployment pipelines and system automation processes—not from a theoretical angle, but through hands-on, iterative work in real enterprise environments.
+My DevOps practice grew out of release management and systems operations. I build and maintain the tooling around delivery: deployment pipelines, repeatable configuration, and automation that helps teams run their applications reliably.
 
 ### Tooling & Environments
 - **Jenkins**: Built and maintained CI/CD pipelines for internal and vendor-hosted applications. Focused on reliability, clarity, and minimal human intervention.
@@ -17,9 +17,7 @@ I’ve spent much of my career building, improving, and maintaining deployment p
 - **Bash / NSH / XML scripting**: Created custom scripts for job orchestration, config templating, and service coordination.
 
 ### Mindset
-I value automation not for its trendiness but for its practical return: fewer mistakes, faster recovery, and systems that don’t rely on tribal knowledge. If it’s repeatable, it gets scripted. If it fails silently, it gets logged and watched.
-
-My approach isn’t flashy—just coherent, maintainable, and grounded in real-world scale.
+I start by understanding the process and the people responsible for it. Then I look for the repeatable steps, the failure points, and the handoffs that need to be clearer. The result might be a script, a configured platform, or a better runbook. I measure its value in fewer mistakes, clearer recovery, and less dependence on tribal knowledge.
 
 ---
 

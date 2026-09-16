@@ -9,7 +9,7 @@ tags:
 ## Software Developer
 **Berkley Technology Services:** ***May 2013 - Sep 2015***
 
-Supported and enhanced the enterprise policy system, with a focus on high-quality development practices, agile collaboration, and system integration improvements.
+Worked in application support and systems integration for the enterprise policy system. My focus was understanding how business applications exchanged information, troubleshooting failures, and improving the reliability of those connections.
 
 ### Key Contributions
 
@@ -25,4 +25,4 @@ Supported and enhanced the enterprise policy system, with a focus on high-qualit
   - Acted as subject matter expert for the integration between Genesys and the Agency Profile System (APS) via PUB/SUB messages using IBM Message Broker.
   - Led efforts to enhance message exchange reliability, optimize performance, and resolve systemic communication bugs.
 
-This role expanded my development capabilities in enterprise environments and deepened my specialization in systems integration and middleware communication.
+This role deepened my understanding of application behavior, business-system dependencies, and middleware communication—experience I carried into release automation and DevOps tooling.

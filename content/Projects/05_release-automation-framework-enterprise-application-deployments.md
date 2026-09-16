@@ -7,14 +7,16 @@ status: completed
 tags:
 ---
 ## Release Automation Framework for Enterprise Application Deployments
-**Berkley Technology Serivces:** ***2015-2016***
+**Berkley Technology Services:** ***2015-2016***
 
 **Overview**
-After three failed attempts to implement a release automation framework, I re-joined the Release Management team to help design and deliver a successful solution. The initiative began with the **Genesys Policy Administration** application, one of the company’s most complex systems, used by over a dozen WR Berkley subsidiaries. From there, the framework scaled to handle nearly all enterprise application releases, transforming release management at a global level.
+I helped the Release Management team turn a fragmented, manual deployment process into a repeatable service for application teams. After three earlier attempts had failed, I re-joined the team to connect the release workflow, change approvals, deployment tools, and stakeholder communications into a working solution.
+
+The pilot started with **Genesys Policy Administration**, one of the company’s most complex systems, used by over a dozen WR Berkley subsidiaries. It grew to support nearly all enterprise application releases. The core contribution was understanding the release process and making the existing tools work together at scale.
 
 **Key Contributions**
 
-- **Architecture & Framework Design**
+- **Release Process & Tool Integration**
     - Designed an extensible automation framework integrating **ServiceNow, Jira, Bamboo, and BladeLogic Middleware Automation**.
     - Built the framework to be reusable across applications, using Bamboo orchestration to differentiate release workflows by application.
 - **Initial Pilot (Genesys Policy Administration)**

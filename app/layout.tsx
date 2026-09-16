@@ -23,8 +23,8 @@ const jetbrains = JetBrains_Mono({
 })
 
 export const metadata = {
-  title: 'Joshua Lossner // Personal Data System',
-  description: 'The portfolio and field notes of DevOps engineer and automation builder Joshua Lossner.',
+  title: 'Joshua Lossner | IT, Release Management & DevOps',
+  description: 'IT professional and practical toolsmith. Joshua Lossner connects systems, improves release processes, and helps teams work through automation, DevOps, and AI-assisted tooling.',
 }
 
 export default function RootLayout({

@@ -4,15 +4,15 @@ company: Grinnell Mutual Insurance
 role: Framework & Guardrails Owner · Technical Driver
 timeline: 2026–Present
 status: in-progress
-tags: [ai, data migration, full-stack, enablement]
+tags: [ai, data migration, tooling, enablement]
 ---
 ## AI Bake-Off — Enablement and Agency Management Modernization
 **Grinnell Mutual Insurance:** ***July 2026 – Present***
 
 **Overview**
-A company-wide, week-long event in which business-sponsored teams built real use cases with AI assistance — and which doubled as a live demonstration that the organization's governance and security model held under real use. Seven use cases, fourteen people.
+I helped seven business-sponsored teams put AI assistance to practical use during a company-wide, week-long event involving fourteen people. My first responsibility was making the work possible: usable workstation tooling, access, guardrails, documentation, and a way to see what happened.
 
-I held two roles. Before the event I owned the shared framework, the guardrails, and secrets and access — the dependency every team needed in order to work at all. During the event I was the technical driver on the Agency Management team, the sole technical builder alongside a business owner and two subject-matter experts. **That team's project was selected to go to production, and its presentation was selected for the company town hall.**
+During the event, I also served as the technical driver on the Agency Management team alongside a business owner and two subject-matter experts. I used AI assistance to turn their domain knowledge and requirements into a working prototype, while checking migration results and keeping unresolved business decisions visible. **The prototype was selected to go to production, and its presentation was selected for the company town hall.** It remains under active refinement.
 
 ---
 
@@ -42,7 +42,7 @@ Finding that out early was most of the value. I proved a build path that needs n
 
 **The constraint.** Three build days, with the demo on the fourth.
 
-**The stack, built from nothing.** Java 21, Spring Boot 3.5, Gradle, embedded Tomcat, React 19 with TypeScript and Vite, SQL Server, Flyway — one jar serving both UI and API. Because the workstation had a JRE 8, no build tool, and no admin rights, the first deliverable was the toolchain itself: a JDK and build tool installed into the user profile, both checksum-verified, activated per shell so the machine-wide configuration other tooling depends on was left untouched.
+**Making the tools usable.** The workstation had a JRE 8, no build tool, and no admin rights, so the first deliverable was the toolchain itself: a JDK and build tool installed into the user profile, both checksum-verified and activated per shell so the machine-wide configuration other tooling depended on was left untouched. The AI-assisted prototype used Java 21, Spring Boot 3.5, Gradle, embedded Tomcat, React 19 with TypeScript and Vite, SQL Server, and Flyway, packaged as one jar serving both UI and API.
 
 **Day one — profile and model.** Profiled all nine legacy landing tables — **3.7 million rows** — using metadata and aggregates only, never reading a row value. Established the load-bearing findings: the producer-to-agency relationship is many-to-many, with a substantial share of producers placing business at more than one agency; the general-agent record deterministically derives both the parent organization and its home office; and lifecycle and date-format rules across the estate. Stood up eighteen tables in the target schema with an effective-dated type registry and database-enforced domain safety, verified by a live negative test.
 
@@ -65,10 +65,12 @@ Finding that out early was most of the value. I proved a build path that needs n
 
 **The presentation.** Built the presentation package and ran the technical half of a company-wide presentation: an eight-scene product tour and demo film with a narration script and a recording rig carrying a fail-safe privacy blur; a live-fix act in which three defects recorded on film were fixed in front of the audience in about sixteen seconds, with the same screens shown working during Q&A; rehearsed four times with a full, tested back-out so the system sat in its pre-fix state until the window opened; and a fact sheet as the single source of truth, where every number on screen had to appear with its source or it did not go on screen.
 
-**After the event.** The project did not stop at the demo. A standing refinement loop now runs — the business sends prompts, I build, the result is reported back. Recent batches have delivered placement-scoped data, producer lifecycle states, role-based access, an employee and principal model, and a migration rewrite around the true legacy primary keys, across nine stacked pull requests and Flyway migrations V18 through V26. Repository totals to date: 98 commits and 31 pull requests, ~7,500 lines of Java and ~8,000 lines of TypeScript/React, 26 database migrations, and a maintained codebase map, data-model decision record, legacy profile, and AI decision log.
+**After the event.** The project did not stop at the demo. A standing refinement loop now runs — the business supplies requests, I work through them with AI assistance, and the results are reported back for review. Recent batches have delivered placement-scoped data, producer lifecycle states, role-based access, an employee and principal model, and a migration rewrite around the true legacy primary keys, across nine stacked pull requests and Flyway migrations V18 through V26. The maintained codebase map, data-model decision record, legacy profile, and AI decision log support that review loop.
+
+**Implementation Detail.** The repository totals at this project snapshot were 98 commits and 31 pull requests, ~7,500 lines of Java and ~8,000 lines of TypeScript/React, and 26 database migrations. That is the scale of the AI-assisted implementation; my contribution is better understood through the tooling, integration decisions, verification, and delivery work described above.
 
 **Honest Limits**
-This is a prototype under active refinement, not a production system. Two-way synchronization with the legacy system was never built, and write-back to the system of record remains advisory by design. The outcome belongs to a team — the business owner framed the problem and the subject-matter experts supplied the domain rulings every migration decision depended on. My contribution was the technical build.
+This is a prototype under active refinement, not a production system. Two-way synchronization with the legacy system was never built, and write-back to the system of record remains advisory by design. The outcome belongs to a team — the business owner framed the problem and the subject-matter experts supplied the domain rulings every migration decision depended on. My contribution was directing the AI-assisted technical work, making the tooling usable, integrating the pieces, and checking the results against the team’s requirements.
 
 **Impact**
 - Delivered a working replacement data model and a reconciled migration over 3.7 million rows of legacy data in three build days, under constraints that were solved rather than escalated.

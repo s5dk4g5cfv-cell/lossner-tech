@@ -3,17 +3,19 @@ title: AI for Development — Enterprise Proof of Concept
 company: Grinnell Mutual Insurance
 role: Platform Builder & Evaluation Lead
 timeline: 2026
-tags: [ai, governance, evaluation, platform engineering]
+tags: [ai, governance, evaluation, tooling, enablement]
 ---
 ## AI for Development — Enterprise Proof of Concept
 **Grinnell Mutual Insurance:** ***May – July 2026***
 
 **Overview**
-A proof of concept to answer one question: can an AI coding assistant do real engineering work inside a regulated insurance environment — safely, auditably, and under the same controls as any other engineer? I proposed the set of test cases that would answer it, was asked to join the project as a builder, and then built the platform the evaluations ran on.
+This proof of concept examined how an IT organization could put AI assistance to useful work with evidence, auditability, and human control. I proposed the test cases, joined the build effort, and brought together the tooling and operating controls the evaluations needed.
 
-The work product was a governed agent platform and a twelve-case evaluation program, delivered over roughly three months: ~28,500 lines of TypeScript/Node across 244 files, 14 forward-only database migrations, 24 architecture decision records, and 14 purpose-built agents.
+My contribution combined platform integration, evaluation design, and operational governance. I focused on how people would use the tools, how actions would be reviewed, and how we would tell a working result from a confident claim.
 
-**The Platform**
+The result was a governed agent platform and a twelve-case evaluation program, delivered over roughly three months. Ten evaluations completed, producing artifacts, evidence, and explicit limits that the organization could use to assess AI-assisted work.
+
+**Tools and Operating Controls**
 - **Observability substrate** — every agent execution recorded with duration, token use, and cost, alongside an incident record.
 - **Agentic runner** — agent loader and phased execution over the Claude Agent SDK, with a transient-retry sleeve.
 - **Secret resolution** — a provider seam backed by the enterprise secret-management platform plus a redaction registry, so an agent never holds a secret value.
@@ -64,6 +66,9 @@ The transferable part is the protocol, not the scores:
 
 **Honest Limits**
 This was an evaluation, not a deployment; nothing from the test cases rolled into production. In the head-to-head security scan, an off-the-shelf review edged the governed agent on raw detection — the platform's argument there is coverage, context, and accountability, not out-detecting a strong ad-hoc reviewer. Two cases used synthetic fixtures because no real archive existed, one case is recorded as half-measured because its human review never happened, and the generated runbooks were never drilled.
+
+**Implementation Detail**
+The platform comprised ~28,500 lines of TypeScript/Node across 244 files, 14 forward-only database migrations, 24 architecture decision records, and 14 purpose-built agents. These describe the implementation’s scale; the evaluation results and operating controls are the evidence of its usefulness.
 
 **Impact**
 - Demonstrated that AI-assisted engineering can meet regulated-industry controls when identity, audit, and human sign-off are designed in rather than bolted on.

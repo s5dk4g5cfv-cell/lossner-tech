@@ -11,11 +11,13 @@ videoTitle: CORA — a walkthrough
 **Personal Project:** ***2025–Present***
 
 **Overview**
-CORA is the personal AI operating environment I built to make collaboration with named AI agents persistent, organized, and portable. Instead of treating every conversation as disposable, CORA gives agents durable identity, memory, skills, schedules, messaging, and shared workflows through human-readable files and lightweight local services.
+CORA is my ongoing toolsmith practice: designing and operating a personal workspace where AI assistance can support real, continuing work. I define the workflows, connect the tools, and keep the instructions and working state inspectable so the system can be understood and improved.
+
+The environment gives named agents persistent identity, memory, skills, schedules, messaging, and shared workflows through human-readable files and local services. AI assistance contributes to the implementation and daily work; I provide direction, context, and operational judgment.
 
 Today, CORA is a working production system. It coordinates research, writing, fact-checking, publishing, books, music, and site operations across a network of specialized agents while remaining inspectable, adaptable, and independent of any single AI model.
 
-**What I Built**
+**Tools and Workflows**
 - Created a filesystem-native operating environment where Markdown, YAML contracts, and Git form a transparent knowledge and governance layer.
 - Gave named agents durable identity, compressed memory, specialized skills, and clear operating instructions that survive across sessions.
 - Designed inter-agent messaging and handoff patterns supporting direct invocation, asynchronous work, escalation, and isolated context.
@@ -28,8 +30,8 @@ CORA now operates the production network behind Coherenceism. Specialized agents
 
 **Technical Foundation**
 - Markdown-native knowledge architecture with YAML frontmatter contracts
-- Git version control and filesystem-based state
-- SQLite-backed messaging and work queues
+- Git version control for configuration and operating instructions
+- Persistent storage for memory, messaging, and work queues
 - Shell automation, scheduled processes, and agent heartbeat orchestration
 - Context compression, semantic retrieval, and session-compaction handling
 - Multi-model workflows with portable identity and operating instructions

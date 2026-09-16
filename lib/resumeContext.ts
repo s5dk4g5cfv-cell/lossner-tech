@@ -155,7 +155,7 @@ export async function loadResumeContext(): Promise<string> {
       .filter(Boolean)
       .join('\n\n')
 
-    const finalContext = compiled || 'Joshua Lossner is an enterprise DevOps and automation leader focused on coherent systems.'
+    const finalContext = compiled || 'Joshua Lossner is an IT professional and practical toolsmith with a background in release management, systems integration, and DevOps.'
 
     cachedContext = {
       value: finalContext,
@@ -165,6 +165,6 @@ export async function loadResumeContext(): Promise<string> {
     return finalContext
   } catch (error) {
     console.error('Failed to load resume context', error)
-    return 'Joshua Lossner is an enterprise DevOps and automation leader focused on coherent systems.'
+    return 'Joshua Lossner is an IT professional and practical toolsmith with a background in release management, systems integration, and DevOps.'
   }
 }
