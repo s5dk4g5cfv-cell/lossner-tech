@@ -287,7 +287,7 @@ const TerminalResume = () => {
     switch (action) {
       case 'contact': {
         const lines = [
-          '- Email: **joshua.c.lossner@icloud.com**  ',
+          '- Email: **joshua@lossner.tech**  ',
           '- LinkedIn: [linkedin.com/in/joshualossner](https://www.linkedin.com/in/joshualossner)  ',
           '- GitHub: [github.com/joshua-lossner](https://github.com/joshua-lossner)'
         ]
