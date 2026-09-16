@@ -10,7 +10,9 @@ tags:
 **Grinnell Mutual Insurance:** ***In Progress***
 
 **Overview**
-Leading the design and production rollout of a containerized **Guidewire InsuranceSuite** development platform using Docker and IntelliJ Remote Development Server. Built as a reproducible alternative to traditional VDI environments, the platform supports all four InsuranceSuite applications (PolicyCenter, ClaimCenter, BillingCenter, ContactManager). Following a five-month R&D effort with little existing precedent or community guidance, the platform completed a controlled beta and is progressing toward production deployment later in 2026.
+I’m giving Guidewire developers a consistent, reproducible environment so they can spend less time managing setup and more time working on their applications. The work brings together container tooling, remote IDE access, credentials, databases, and operational procedures into a usable development environment.
+
+The platform uses Docker and IntelliJ Remote Development Server as an alternative to traditional VDI, supporting all four **Guidewire InsuranceSuite** applications: PolicyCenter, ClaimCenter, BillingCenter, and ContactManager. Following a five-month R&D effort with little existing precedent or community guidance, it completed a controlled beta and is progressing toward production deployment later in 2026.
 
 **Contributions to Date**
 - **IntelliJ Remote Development Server Discovery** — Resolved a critical technical blocker involving IntelliJ's undocumented plugin architecture for Remote Development Server, discovering that it uses project-specific plugin isolation rather than global plugin directories — behavior for which no public documentation was available at the time.

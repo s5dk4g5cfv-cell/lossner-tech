@@ -9,7 +9,7 @@ tags:
 ## Software Engineer
 **Berkley Technology Services:** ***Oct 2015 - Jun 2021***
 
-Led the charge on release automation and Atlassian ecosystem integration, dramatically increasing deployment velocity and system interoperability across development teams.
+My work in this role centered on release management, automation, and the enterprise tools supporting delivery. I helped teams turn complex release procedures into repeatable workflows and connected Atlassian platforms with change-management and deployment systems.
 
 ### Key Contributions
 
@@ -26,4 +26,4 @@ Led the charge on release automation and Atlassian ecosystem integration, dramat
   - Executed strategic upgrades and server migrations for Atlassian tools to boost performance and resilience.
   - Authored and maintained critical runbooks, crisis protocols, and procedural documentation.
 
-This role solidified my leadership in automation and DevOps tooling, driving large-scale initiatives in process maturity, team efficiency, and enterprise system modernization.
+This role brought together the work I value most: understanding release processes, integrating practical tools, supporting the people using them, and making delivery repeatable at enterprise scale.

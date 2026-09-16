@@ -7,7 +7,7 @@ tags:
 
 ## Release Management
 
-Before “DevOps” was a buzzword, I was already immersed in the daily realities of coordinating, documenting, and executing software releases at scale. My approach to release management is pragmatic—rooted in process discipline, clear communication, and automation wherever possible.
+Release management is the foundation of my enterprise IT experience. I’ve coordinated, documented, and executed software releases across teams and environments, bringing together change approvals, deployment tooling, communication, and recovery procedures. That experience shapes how I approach DevOps today.
 
 ### Areas of Focus
 - **CI/CD Pipelines**: Designed and maintained automated pipelines using Jenkins, Bamboo, and Automate. Supported deployments across dev, test, QA, and production environments.

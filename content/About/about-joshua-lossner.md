@@ -2,86 +2,57 @@
 title: "About Joshua Lossner"
 category: "Professional Profile"
 ---
-# **Joshua Lossner**
+# Joshua Lossner
 
-## **DevOps Engineer & Enterprise Technology Leader**
+## IT Professional · Release Management · DevOps
 
-### **Professional Summary**
+I’m an IT professional with 18+ years of enterprise experience in release management, systems operations, and automation. My career has grown from supporting business technology and coordinating software releases into a hands-on DevOps practice.
 
-Accomplished IT Professional with 18+ years of experience in enterprise technology, release management, and automation. Proven success in building frameworks at scale, modernizing infrastructure, and leading cross-team transformations. Skilled in containerization, CI/CD, and enterprise migrations, with a growing focus on **AI-assisted development and RAG-driven platforms**. I thrive at the intersection of technical depth, systemic process design, and human-centered problem solving.
+I’m a **toolsmith at heart**. I learn how the work happens, find the friction, and bring together tools, integrations, and clear procedures that make it easier to do well. My strengths are understanding the problem, connecting the pieces, and helping people use the result with confidence.
 
-### **Career Journey**
+### What I Bring
 
-**From the Ground Up**
-My career began at age 14 at Kinley’s Golf & Sports Center, where I balanced 30–40 hours of work per week with school. From repairing golf clubs to designing IT systems, I learned the value of dedication, continuous learning, and hands-on problem solving.
+- **Reliable delivery.** Release planning, change control, deployment automation, and recovery procedures that keep teams coordinated.
+- **Practical tooling.** Configured platforms, scripts, integrations, and repeatable environments that reduce manual work.
+- **Operational judgment.** Experience supporting enterprise applications, troubleshooting middleware, and planning migrations around real constraints.
+- **Knowledge people can use.** Runbooks, training, and documentation that make work understandable and supportable.
+- **AI-assisted problem solving.** Applying AI to useful work while keeping evaluation, verification, and human decisions visible.
 
-**Educational Foundation**
-While working full-time, I pursued and completed both undergraduate and graduate degrees in Information Technology, demonstrating my commitment to lifelong learning and professional growth.
+### My Career
 
-**Enterprise Expertise**
-Over the past 15+ years at Berkley Technology Services, Mumo Systems, and now Grinnell Mutual, I’ve advanced through increasingly complex roles — from Software Configuration Analyst to DevOps Engineer — building deep expertise in **automation, release management, and infrastructure modernization**.
+**Business IT, from the ground up.**
+I started at Kinley’s Golf & Sports Center at age 14. Over time, my responsibilities grew from maintenance and customer service to inventory systems, IT infrastructure, business reporting, and staff training. I completed undergraduate and graduate degrees in Information Technology while working full-time.
 
-**Recent Work**
-At Grinnell Mutual, I’ve led automation and modernization initiatives, including migrating from Automate Server to Automate-Plus, and designing **containerized Guidewire development environments** with Docker and DevContainers. These projects reduced developer setup time from hours to minutes, strengthened system reliability, and positioned teams for future growth.
+**Release management and enterprise operations.**
+At Berkley Technology Services, I worked across software configuration, WebSphere administration, systems integration, and release automation. My Software Developer and Software Engineer roles included application support and integration work, followed by a sustained focus on the tools and processes around software delivery.
 
-### **Core Philosophy**
+I co-developed a release automation framework supporting **18,000+ annual production deployments** and helped connect ServiceNow, Jira, Bamboo, and deployment tooling into a repeatable, auditable process. I also led the migration of Atlassian applications from Server to Data Center.
 
-I believe in **automation with coherence** — leveraging technology not just for efficiency, but for clarity, resilience, and human value. My approach blends:
+**Helping teams adopt better tools.**
+At Mumo Systems, I supported clients through Atlassian migrations, upgrades, and source-control changes, pairing technical delivery with documentation and client enablement.
 
-- **Hands-on Technical Depth**: Deep experience across infrastructure, platforms, and tools
-- **Systemic Process Thinking**: A structured approach to identifying and solving operational challenges
-- **Cross-Team Collaboration**: Building bridges between technical and business teams
-- **Lifelong Learning**: Staying grounded while evolving with new technologies
+**DevOps and AI enablement.**
+At Grinnell Mutual, my work includes the move to Automate-Plus, containerized Guidewire development environments, and the tooling and controls around AI-assisted work. In the Guidewire beta evaluation, all four respondents connected through IntelliJ in two minutes or less; production rollout remains in progress.
 
-### **Key Strengths**
+For the AI for Development proof of concept and the company AI Bake-Off, I helped turn experimentation into something teams could evaluate and use: workstation setup, shared tooling, access controls, audit records, and a clear path for human review. The Agency Management prototype was selected to go to production and remains under refinement.
 
-**Release Management Excellence**
-- Co-developed automation framework managing 18,000+ annual production deployments
-- Led enterprise-scale migrations with zero downtime
-- Established robust CI/CD pipelines and deployment processes
+### How I Work
 
-**System Integration Expertise**
-- Seamless integration between complex enterprise systems (ServiceNow, Atlassian, IBM)
-- Custom plugin development and API integrations
-- Expert in message broker patterns and enterprise service architecture
+I start with the process and the people responsible for it. I look for where information gets lost, where a manual step creates risk, and where an existing tool can do more of the work. I work with developers, operations teams, business owners, and subject-matter experts to understand the constraints before choosing a solution.
 
-**Modern Tooling & Containerization**
-- Designed and deployed containerized environments with Docker and DevContainers
-- Implemented modern CI/CD practices with Jenkins, PowerShell/Bash scripting, and cloud-native approaches
+Scripting, APIs, container tools, and AI assistance are part of my toolkit. The work also includes deciding what to automate, checking that it behaves as intended, documenting its limits, and making it useful to the next person.
 
-**Digital Transformation Leadership**
+### Tools I’ve Worked With
 
-- Successfully transitioned organizations from manual to automated processes
-- Led Atlassian Server to Data Center migrations
-- Implemented e-commerce solutions resulting in 40% sales growth
+- **Delivery and automation:** Jenkins, Bamboo, Automate-Plus, Chef, BladeLogic, PowerShell, Bash, and NSH.
+- **Platforms and environments:** Docker, DevContainers, WebSphere, Windows, and UNIX.
+- **Collaboration and change management:** Jira, Confluence, Bitbucket, Crowd, and ServiceNow.
+- **Integration:** REST/SOAP APIs, IBM Message Broker, Java/J2EE, XML, and databases.
 
-**Knowledge Management Champion**
-- Created comprehensive documentation systems enhancing team efficiency
-- Developed training programs for technical and non-technical staff
-- Established knowledge sharing practices across organizations
+### What I’m Exploring
 
-### **Technical Expertise Highlights**
+My personal projects extend the same approach. With **CORA**, I design and operate a workspace for ongoing human-AI collaboration: instructions, memory, tools, and workflows that can be inspected and improved. **Coherenceism** gives me a place to explore technology, creativity, and philosophy through writing and AI-assisted projects.
 
-- **Automation Platforms**: Automate-Plus, Jenkins, Chef, Docker, DevContainers
-- **Enterprise Applications**: WebSphere, ServiceNow, Atlassian Suite
-- **Integration Technologies**: IBM Message Broker, REST/SOAP APIs
-- **Infrastructure**: Multi-tier environments, Windows/UNIX administration
-- **Development**: Java/J2EE, scripting (PowerShell, Bash), database management
+I’m interested in how AI can help IT professionals build useful tools and improve everyday work. The part I bring is direction, context, operational experience, and a way to check the result.
 
-### **Personal Interests**
-Beyond enterprise systems, I invest energy in projects that explore the boundaries of **technology, creativity, and philosophy**:
-
-- **Generative AI & Prompting**: Actively experiment with large language models, RAG pipelines, and AI-assisted coding.
-- **Coherenceism**: Founder of _coherenceism.info_, a publishing and philosophy platform blending technical learning with reflective writing. Includes journals, books, and an AI assistant powered by site content.
-- **Documentary Curiosity**: I enjoy long-form lectures and documentaries that deepen my understanding of history, systems, and culture.
-- **Digital Simplicity**: I value minimalist workflows and tools that reduce friction and increase clarity — especially on iPad and mobile platforms.
-
-### **What Drives Me**
-
-I’m passionate about building systems that not only work today but scale for tomorrow. Whether streamlining a complex deployment process, integrating disparate systems, or mentoring team members, I find fulfillment in creating solutions that have lasting positive impact.
-
-Looking forward, I aim to leverage my enterprise expertise while expanding into **AI-driven development and systems design** — exploring how automation, coherence, and human creativity can converge in future technology landscapes.
-
----
-
-> _“The best solutions make complexity invisible—and free people to do meaningful work.”_
+> “The best solutions make complexity understandable—and give people more room to do meaningful work.”
