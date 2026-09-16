@@ -22,17 +22,22 @@ The local `.vercel/project.json` links to the existing Vercel project and is
 Git-ignored. Production and preview environment variables are configured on
 Vercel; their values belong outside Git. Preview URLs require Vercel sign-in.
 
-**Connection pending:** Vercel currently cannot access the private GitHub
-repository (`repo_not_found`). Grant its GitHub integration access from
+Vercel is connected to the private GitHub repository, with `main` as the
+production branch. Pushes to working branches create preview deployments;
+merges to `main` publish production deployments. Connection settings live in
 [project Git settings](https://vercel.com/joshuas-projects-d90002b6/lossner-tech/settings/git).
-An automatic branch preview must be verified after that connection succeeds.
 
-The intended workflow is:
+The workflow is:
 
 1. Create a `work/WORK-N-description` branch from `main`.
 2. Push it to `origin` and open a pull request.
-3. Review the Vercel preview before merging.
+3. Wait for the Vercel check to pass, then review its preview before merging.
 4. Merge to `main` only when Joshua approves publishing the changes.
+
+Use a commit author associated with Joshua's connected GitHub account so
+Vercel can verify deployment access. The current account's GitHub noreply
+address is `320252185+s5dk4g5cfv-cell@users.noreply.github.com`.
+AI-assisted commits can retain an `Ivy <ivy@cora.local>` co-author trailer.
 
 ## Production baseline
 
