@@ -289,7 +289,7 @@ const TerminalResume = () => {
         const lines = [
           '- Email: **joshua@lossner.tech**  ',
           '- LinkedIn: [linkedin.com/in/joshualossner](https://www.linkedin.com/in/joshualossner)  ',
-          '- GitHub: [github.com/joshua-lossner](https://github.com/joshua-lossner)'
+          '- GitHub: [github.com/s5dk4g5cfv-cell](https://github.com/s5dk4g5cfv-cell)'
         ]
 
         const messageId = createId()
