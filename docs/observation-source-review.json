@@ -1,0 +1,159 @@
+{
+  "reviewedOn": "2026-09-25",
+  "articles": {
+    "the-return-of-the-prodigal-coder": {
+      "date": "2026-01-05",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "d04b84f2826551b333a88a4abfd2b1c2e4c9fff77de22508cc505fbf9221d69f",
+      "changes": [
+        "Removed unverified Liz Fong-Jones quote: the linked Willison note quotes Ethan Mollick, not Fong-Jones. Replaced with attributed paraphrase of Willison.",
+        "Scoped anecdotal return-to-coding observations; removed invented participant quotations and blanket claims that coding knowledge is mere ceremony."
+      ],
+      "sources": [
+        [
+          "Simon Willison, Helping people write code again — January 4, 2026",
+          "https://simonwillison.net/2026/Jan/4/coding-again/"
+        ]
+      ]
+    },
+    "calibrated-distrust-as-craft": {
+      "date": "2026-01-12",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "f065b79adad8d647e35d398f9e6df6be72a06f4585b19ca0d0a6fa4d8affaf4e",
+      "changes": [
+        "Added a directly relevant practitioner source; original source metadata gave no exact URL.",
+        "Marked examples as illustrative, replaced seniority stereotypes and exact-certainty claims, and retained tests alongside intuition."
+      ],
+      "sources": [
+        [
+          "Simon Willison, Vibe engineering — October 7, 2025",
+          "https://simonwillison.net/2025/Oct/7/vibe-engineering/"
+        ]
+      ]
+    },
+    "the-relationship-layer": {
+      "date": "2026-01-26",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "1da996112a9d430252f1f91e72eda3353b3c6cafdf321eaeac98ab98facf8161",
+      "changes": [
+        "Restored exact paper citation and publication date; identified it as a commentary/framework, not a causal experiment.",
+        "Qualified psychological causation, personalization and measurement claims; labeled opening hypothetical."
+      ],
+      "sources": [
+        [
+          "Hannah Rose Kirk et al., Why human–AI relationships need socioaffective alignment — May 28, 2025",
+          "https://www.nature.com/articles/s41599-025-04532-5"
+        ]
+      ]
+    },
+    "the-exhaustion-engine": {
+      "date": "2026-02-09",
+      "canonicalAuthor": null,
+      "originalBodySha256": "16fdb8aadaa4afdfdfe3c885d7609b6a37dca1aae85d4f462837663f2ef8b75b",
+      "changes": [
+        "Scoped study to one company; removed invented researcher expectation (researcher says no fixed hypothesis).",
+        "Removed unsupported generalized mental-health and AI-incapacity claims; distinguished illustrative scenarios and personal commentary.",
+        "Replaced blame-the-user-only conclusion with shared personal, design and organizational responsibility. Removed orphan footnotes and obsolete numbered philosophy reference.",
+        "Canonical database author is null: credited Coherenceism AI editorial team without inventing an individual byline.",
+        "February 18 researcher interview is explicitly later corroboration added in September review, not claimed available on February 9."
+      ],
+      "sources": [
+        [
+          "Berkeley Haas, interview with researcher Xingqi Maggie Ye — February 18, 2026; checked for this republication",
+          "https://newsroom.haas.berkeley.edu/ai-promised-to-free-up-workers-time-uc-berkeley-haas-researchers-found-the-opposite/"
+        ],
+        [
+          "Simon Willison, AI Doesn’t Reduce Work—It Intensifies It — February 9, 2026",
+          "https://simonwillison.net/2026/Feb/9/ai-intensifies-work/"
+        ],
+        [
+          "Original study report: Ranganathan and Ye, Harvard Business Review — February 2026",
+          "https://hbr.org/2026/02/ai-doesnt-reduce-work-it-intensifies-it"
+        ]
+      ]
+    },
+    "the-friction-was-the-point": {
+      "date": "2026-07-20",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "7e7f87700ec02b3fe7f4d81599f3df0c136391966d687f97b195abe03296d4a7",
+      "changes": [
+        "Removed invented invitation motives; identified speech as 2025 event reported July 2026; corrected co-founder credit.",
+        "Attributed education harms to Eggers; qualified developmental and synthetic-feedback claims.",
+        "Added existing Study Mode counterexample to unsupported blanket design claim."
+      ],
+      "sources": [
+        [
+          "The Verge reporting",
+          "https://www.theverge.com/ai-artificial-intelligence/967630/dave-eggers-openai-chatgpt-silencing-an-entire-generation"
+        ],
+        [
+          "826 National history",
+          "https://826national.org/our-work/news/20-years-of-826/"
+        ],
+        [
+          "OpenAI Study Mode",
+          "https://openai.com/index/chatgpt-study-mode/"
+        ]
+      ]
+    },
+    "what-we-practice-when-the-machine-begins": {
+      "date": "2026-09-07",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "c71c1cd599880ed20f473ffe4f91d1f3965837421ac78ce341816e5d17fff487",
+      "changes": [
+        "Added checked primary source links; retained explicitly hypothetical scenarios and uncertainty."
+      ],
+      "sources": [
+        [
+          "Roland is getting into generative AI music with Melody Flip",
+          "https://www.theverge.com/ai-artificial-intelligence/990197/roland-ai-music-melody-flip"
+        ],
+        [
+          "Roland: Melody Flip product documentation",
+          "https://www.roland.com/us/products/rc_melody_flip/"
+        ]
+      ]
+    },
+    "we-were-not-reading-the-same-message": {
+      "date": "2026-09-14",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "3ed31bc1faeb0f2d21981636c3a121ebad0de00ba0e6416502f22ae9e9527c7a",
+      "changes": [
+        "Added checked primary source links; retained explicitly hypothetical scenarios and uncertainty."
+      ],
+      "sources": [
+        [
+          "Once popular for attacking AI, ASCII smuggling is embraced by spammers",
+          "https://arstechnica.com/security/2026/09/once-popular-for-attacking-ai-ascii-smuggling-is-embraced-by-spammers/"
+        ],
+        [
+          "Microsoft Security: ASCII smuggling crosses over from AI prompt injection to phishing evasion — September 3, 2026",
+          "https://www.microsoft.com/en-us/security/blog/2026/09/03/ascii-smuggling-crosses-over-from-ai-prompt-injection-to-phishing-evasion/"
+        ],
+        [
+          "Johann Rehberger: ASCII smuggling and hidden prompt instructions — 2024",
+          "https://embracethered.com/blog/posts/2024/ascii-smuggling-and-hidden-prompt-instructions/"
+        ]
+      ]
+    },
+    "being-known-is-not-the-same-as-being-met": {
+      "date": "2026-09-21",
+      "canonicalAuthor": "echo",
+      "originalBodySha256": "a9f2e2826983c2159f196abd8789d74ffa7c2e70d421b97116923cad76aa2b80",
+      "changes": [
+        "Added checked primary source links; retained explicitly hypothetical scenarios and uncertainty.",
+        "Added Aten’s original September 19 account of syncing; kept disputed permission unresolved. Did not silently import September 23 follow-up into September 21 text."
+      ],
+      "sources": [
+        [
+          "Meta’s Muse is creepy, but maybe not for the reasons you think",
+          "https://www.theverge.com/ai-artificial-intelligence/997833/meta-muse-creepy"
+        ],
+        [
+          "Jason Aten: firsthand account of Muse accessing Messages — September 19, 2026",
+          "https://www.inc.com/jason-aten/metas-new-muse-ai-agent-read-my-private-messages-i-never-asked-it-to/91408202"
+        ]
+      ]
+    }
+  }
+}

@@ -52,3 +52,14 @@ folder and its path is printed with the results.
 Install test dependencies with `npm ci --include=dev`. For a fresh browser cache,
 use `PLAYWRIGHT_SKIP_BROWSER_GC=1 npx playwright install chromium` to preserve
 other projects' browser versions on shared hosts.
+
+
+## Selected Coherenceism observations (WORK-2521)
+
+Eight Human & AI pieces appear in the same Observations list as the three personal essays, newest original date first. Their dates are the first Coherenceism publication days; September 25, 2026 is separately identified as the republication review date. The original site and database remain unchanged.
+
+Seven canonical records identify Echo; one (The Exhaustion Engine) has no individual author. That entry is credited to the Coherenceism AI editorial team, without inferring a writer from the river assignment. Existing personal essays retain their exact content and metadata. The AI guide receives explicit attribution for imported essays.
+
+[Source review and correction record](observation-source-review.json) records original body hashes, reviewed sources, and substantive edits. Sources added after an original publication are identified as later corroboration. Unsupported quotes, inferred motives, and universal claims were removed or narrowed; hypothetical scenarios remain labeled. Source review does not mean every philosophical argument is an empirical finding.
+
+Checks: `node --test tests/observations.test.mjs`, `npm run build`, and `node tests/observations-local.mjs` (desktop/mobile browser, list order, all eleven dates and full API bodies, author labels, original links, review date, intact italic introductions).

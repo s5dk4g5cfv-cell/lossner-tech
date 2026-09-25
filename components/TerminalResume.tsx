@@ -5,6 +5,7 @@ import ReactMarkdown from 'react-markdown'
 import dynamic from 'next/dynamic'
 import VideoEmbed from './VideoEmbed'
 import PublicationDate from './PublicationDate'
+import { publicationDate } from '../lib/publicationDate.mjs'
 
 const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
 
@@ -22,6 +23,11 @@ type Message = {
   meta?: string
   publicationDate?: unknown
   isObservation?: boolean
+  author?: string
+  originalUrl?: string
+  originalPublisher?: string
+  reviewedOn?: unknown
+  reviewNote?: string
   videoId?: string
   videoTitle?: string
 }
@@ -81,6 +87,9 @@ const stripLeadingMeta = (content: string) => {
 }
 
 const sortItemsForSection = (sectionId: string, items: ContentItem[]) => {
+  if (sectionId === 'journal') {
+    return [...items].sort((a, b) => (publicationDate(b.metadata?.date)?.iso ?? '').localeCompare(publicationDate(a.metadata?.date)?.iso ?? '') || a.title.localeCompare(b.title))
+  }
   if (sectionId === 'experience') {
     return [...items].sort((a, b) => b.filename.localeCompare(a.filename))
   }
@@ -262,11 +271,16 @@ const TerminalResume = () => {
         role: 'ai',
         heading: section.label,
         title: data.title ?? item.title,
-        content: stripLeadingMeta(data.content ?? ''),
+        content: section.id === 'journal' ? (data.content ?? '').replace(/^#{1,3}\s+[^\n]+\n+/, '') : stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
         meta: metaParts.join(' · ') || undefined,
         isObservation: section.id === 'journal',
         publicationDate: m.date,
+        author: m.author ?? 'Joshua Lossner',
+        originalUrl: m.originalUrl,
+        originalPublisher: m.originalPublisher,
+        reviewedOn: m.reviewedOn,
+        reviewNote: m.reviewNote,
         videoId: typeof m.video === 'string' ? m.video : undefined,
         videoTitle: typeof m.videoTitle === 'string' ? m.videoTitle : undefined
       })
@@ -353,7 +367,7 @@ const TerminalResume = () => {
             id: createId(),
             role: 'ai',
             heading: section.label,
-            content: stripLeadingMeta(data.content ?? ''),
+            content: section.id === 'journal' ? (data.content ?? '').replace(/^#{1,3}\s+[^\n]+\n+/, '') : stripLeadingMeta(data.content ?? ''),
             isMarkdown: true,
             meta: firstItem.metadata?.period || firstItem.metadata?.timeline || firstItem.metadata?.status,
           })
@@ -609,7 +623,12 @@ const TerminalResume = () => {
           <article className={isUser ? 'terminal-user-message' : 'terminal-record'}>
             {message.heading && <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e0b25a]">{message.heading}</p>}
             {message.title && <h2 className="mb-2 max-w-3xl font-serif text-2xl font-normal leading-tight tracking-[-0.015em] text-[#e4dfd5] sm:text-3xl">{message.title}</h2>}
-            {message.isObservation && <p className="mb-5 text-sm text-[#e4dfd5]/70"><PublicationDate value={message.publicationDate} /></p>}
+            {message.isObservation && <div className="mb-5 space-y-2 text-sm leading-relaxed text-[#e4dfd5]/70">
+              <p><PublicationDate value={message.publicationDate} original={Boolean(message.originalUrl)} /></p>
+              <p>{message.author}</p>
+              {message.originalUrl && <p><a className="underline underline-offset-4 hover:text-[#e0b25a]" href={message.originalUrl}>Read the original on {message.originalPublisher}</a></p>}
+              {message.reviewNote && <p className="max-w-3xl text-xs">{message.reviewNote} {publicationDate(message.reviewedOn) && <>Review date: <time dateTime={publicationDate(message.reviewedOn)!.iso}>{publicationDate(message.reviewedOn)!.label}</time>.</>}</p>}
+            </div>}
             {message.meta && <p className="mb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/42">{message.meta}</p>}
             {message.videoId && (
               <VideoEmbed
@@ -658,7 +677,8 @@ const TerminalResume = () => {
       disabled={isProcessing}
     >
       <span className="block text-[13px] leading-snug">{item.title}</span>
-      {selectedSection.id === 'journal' && <span className="mt-1 block text-[11px] leading-relaxed text-[#e4dfd5]/70"><PublicationDate value={item.metadata?.date} /></span>}
+      {selectedSection.id === 'journal' && <span className="mt-1 block text-[11px] leading-relaxed text-[#e4dfd5]/70"><PublicationDate value={item.metadata?.date} original={Boolean(item.metadata?.originalUrl)} /></span>}
+      {selectedSection.id === 'journal' && <span className="mt-1 block text-[10px] leading-relaxed text-[#e4dfd5]/60">{item.metadata?.author ?? 'Joshua Lossner'}</span>}
       {item.metadata?.period && <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-[#e4dfd5]/32">{item.metadata.period}</span>}
     </button>
   ) : null
