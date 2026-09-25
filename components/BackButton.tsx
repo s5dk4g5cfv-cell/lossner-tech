@@ -9,7 +9,7 @@ const SECTION_CONFIG = {
   projects: { menu: '/projects', label: 'PROJECTS' },
   project: { menu: '/projects', label: 'PROJECT' },
   education: { menu: '/education', label: 'EDUCATION' },
-  journal: { menu: '/journal', label: 'JOURNAL' },
+  journal: { menu: '/journal', label: 'OBSERVATIONS' },
   about: { menu: '/about', label: 'ABOUT' }
 } as const
 

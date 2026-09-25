@@ -150,7 +150,7 @@ export async function loadResumeContext(): Promise<string> {
       educationSummary ? `Education:\n${educationSummary}` : null,
       projectSummary ? `Notable Projects:\n${projectSummary}` : null,
       skillsSummary ? `Core Skills & Focus Areas:\n${skillsSummary}` : null,
-      journalSummary ? `Recent Journal Entries:\n${journalSummary}` : null
+      journalSummary ? `Recent Observations:\n${journalSummary}` : null
     ]
       .filter(Boolean)
       .join('\n\n')
