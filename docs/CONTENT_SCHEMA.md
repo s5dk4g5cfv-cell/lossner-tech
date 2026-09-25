@@ -47,11 +47,11 @@ The markdown body carries the narrative, headings, and bullet lists that render 
 | `aliases` | `string[]` (optional) | Search keywords |
 | `tags` | `string[]` (optional) | Related concepts |
 
-## Journal entries (`/content/Journal/*.md`)
+## Observations entries (`/content/Journal/*.md`)
 | Field | Type | Notes |
 | --- | --- | --- |
 | `title` | string | Post title |
-| `date` | `YYYY-MM-DD` | Publish date |
+| `date` | `YYYY-MM-DD` (optional) | Original publication day; preserve across edits. Missing/invalid values display “Publication date unknown.” |
 | `order` | number (optional) | Smaller numbers sort to the top |
 | `tags` | `string[]` (optional) | Topics |
 
@@ -62,3 +62,5 @@ The markdown body carries the narrative, headings, and bullet lists that render 
 | `category` | string | High-level grouping |
 
 The `content` API strips `title` and any `order` field from metadata after deriving display data. Keep long-form copy in the markdown body.
+
+See [Observations](OBSERVATIONS.md) for original-date provenance and compatibility.

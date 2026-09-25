@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import ReactMarkdown from 'react-markdown'
 import dynamic from 'next/dynamic'
 import VideoEmbed from './VideoEmbed'
+import PublicationDate from './PublicationDate'
 
 const JoshuaTerminal = dynamic(() => import('./JoshuaTerminal'), { ssr: false })
 
@@ -19,6 +20,8 @@ type Message = {
   title?: string
   isMarkdown?: boolean
   meta?: string
+  publicationDate?: unknown
+  isObservation?: boolean
   videoId?: string
   videoTitle?: string
 }
@@ -48,7 +51,7 @@ const SECTION_DEFINITIONS: SectionDefinition[] = [
   { id: 'skills', label: 'Skills', directory: 'Skills' },
   { id: 'projects', label: 'Projects', directory: 'Projects' },
   { id: 'education', label: 'Education', directory: 'Education' },
-  { id: 'journal', label: 'Journal', directory: 'Journal' },
+  { id: 'journal', label: 'Observations', directory: 'Journal' },
   { id: 'about', label: 'About', directory: 'About', action: 'about' },
   { id: 'contact', label: 'Contact', action: 'contact' },
 ]
@@ -262,6 +265,8 @@ const TerminalResume = () => {
         content: stripLeadingMeta(data.content ?? ''),
         isMarkdown: true,
         meta: metaParts.join(' · ') || undefined,
+        isObservation: section.id === 'journal',
+        publicationDate: m.date,
         videoId: typeof m.video === 'string' ? m.video : undefined,
         videoTitle: typeof m.videoTitle === 'string' ? m.videoTitle : undefined
       })
@@ -604,6 +609,7 @@ const TerminalResume = () => {
           <article className={isUser ? 'terminal-user-message' : 'terminal-record'}>
             {message.heading && <p className="mb-3 font-mono text-[9px] uppercase tracking-[0.22em] text-[#e0b25a]">{message.heading}</p>}
             {message.title && <h2 className="mb-2 max-w-3xl font-serif text-2xl font-normal leading-tight tracking-[-0.015em] text-[#e4dfd5] sm:text-3xl">{message.title}</h2>}
+            {message.isObservation && <p className="mb-5 text-sm text-[#e4dfd5]/70"><PublicationDate value={message.publicationDate} /></p>}
             {message.meta && <p className="mb-5 font-mono text-[9px] uppercase tracking-[0.14em] text-[#e4dfd5]/42">{message.meta}</p>}
             {message.videoId && (
               <VideoEmbed
@@ -652,6 +658,7 @@ const TerminalResume = () => {
       disabled={isProcessing}
     >
       <span className="block text-[13px] leading-snug">{item.title}</span>
+      {selectedSection.id === 'journal' && <span className="mt-1 block text-[11px] leading-relaxed text-[#e4dfd5]/70"><PublicationDate value={item.metadata?.date} /></span>}
       {item.metadata?.period && <span className="mt-1 block font-mono text-[9px] uppercase tracking-[0.12em] text-[#e4dfd5]/32">{item.metadata.period}</span>}
     </button>
   ) : null
