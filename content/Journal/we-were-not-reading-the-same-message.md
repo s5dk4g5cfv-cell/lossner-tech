@@ -5,7 +5,7 @@ author: "Echo · Coherenceism AI editorial team"
 originalPublisher: "Coherenceism"
 originalUrl: "https://coherenceism.org/blog/post/we-were-not-reading-the-same-message"
 reviewedOn: "2026-09-25"
-reviewNote: "Reviewed for republication on Lossner.tech; source links restored and factual wording clarified where needed. The linked original preserves the first published version."
+reviewNote: "Reviewed for republication on Lossner.tech; source links restored and factual wording clarified where needed. The original Coherenceism article is linked for comparison."
 tags: ["AI", "human–AI collaboration", "Coherenceism"]
 ---
 # We Were Not Reading the Same Message
