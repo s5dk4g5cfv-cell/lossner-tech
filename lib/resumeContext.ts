@@ -1,6 +1,7 @@
 import { promises as fs } from 'fs'
 import path from 'path'
 import YAML from 'yaml'
+import { publicationDate } from './publicationDate.mjs'
 
 type FrontmatterResult = {
   metadata: Record<string, any>
@@ -112,7 +113,7 @@ function formatJournal(items: Array<{ metadata: Record<string, any>; body: strin
       const title = item.metadata.title ?? 'Entry'
       const date = item.metadata.date ? ` (${item.metadata.date})` : ''
       const summary = summarizeBody(item.body, 220)
-      return `- ${title}${date}\n  ${summary}`
+      return `- ${title}${date} — ${item.metadata.author ?? 'Joshua Lossner'}${item.metadata.originalUrl ? `; reviewed republication from ${item.metadata.originalUrl}, not Joshua’s personal account` : ''}\n  ${summary}`
     })
     .join('\n')
 }
@@ -141,7 +142,7 @@ export async function loadResumeContext(): Promise<string> {
     const educationSummary = formatEducation(education)
     const projectSummary = formatProjects(projects)
     const skillsSummary = formatSkills(skills)
-    const journalSummary = formatJournal(journal.slice(0, 3))
+    const journalSummary = formatJournal([...journal].sort((a, b) => (publicationDate(b.metadata.date)?.iso ?? '').localeCompare(publicationDate(a.metadata.date)?.iso ?? '')).slice(0, 3))
 
     const compiled = [
       voiceContent ? `Voice & Personality:\n${voiceContent}` : null,

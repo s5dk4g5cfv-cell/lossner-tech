@@ -52,7 +52,12 @@ The markdown body carries the narrative, headings, and bullet lists that render 
 | --- | --- | --- |
 | `title` | string | Post title |
 | `date` | `YYYY-MM-DD` (optional) | Original publication day; preserve across edits. Missing/invalid values display “Publication date unknown.” |
-| `order` | number (optional) | Smaller numbers sort to the top |
+| `order` | number (optional) | Legacy API ordering; the Observations UI sorts by original date, newest first |
+| `author` | string (optional) | Displayed in the list and article; existing personal essays default to Joshua Lossner |
+| `originalPublisher` | string (optional) | Name of the original publication |
+| `originalUrl` | URL (optional) | Original article link; marks the displayed date as original publication |
+| `reviewedOn` | `YYYY-MM-DD` (optional) | Separate date for the republication source review |
+| `reviewNote` | string (optional) | Explains editorial changes without replacing the original date |
 | `tags` | `string[]` (optional) | Topics |
 
 ## About entries (`/content/About/*.md`)

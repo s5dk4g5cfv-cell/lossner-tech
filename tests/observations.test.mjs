@@ -25,8 +25,22 @@ for (const [file, [iso, label, original]] of Object.entries(expected)) {
     assert.equal(raw, execFileSync('git', ['show', `955090ce553a5157d62354a486bfea94652a27c9:${path}`], { encoding: 'utf8' }))
   })
 }
-test('the audit covers every existing entry', () => {
-  assert.deepEqual(readdirSync('content/Journal').filter(f => f.endsWith('.md')).sort(), Object.keys(expected).sort())
+test('eight approved republications retain dates, links and honest credits alongside personal essays', () => {
+  const review = JSON.parse(readFileSync('docs/observation-source-review.json', 'utf8'))
+  assert.equal(Object.keys(review.articles).length, 8)
+  const files = readdirSync('content/Journal').filter(f => f.endsWith('.md')).sort()
+  assert.deepEqual(files, [...Object.keys(expected), ...Object.keys(review.articles).map(slug => `${slug}.md`)].sort())
+  for (const [slug, record] of Object.entries(review.articles)) {
+    const raw = readFileSync(`content/Journal/${slug}.md`, 'utf8')
+    const metadata = parse(raw)
+    assert.equal(metadata.date, record.date)
+    assert.equal(metadata.originalUrl, `https://coherenceism.org/blog/post/${slug}`)
+    assert.equal(metadata.author, record.canonicalAuthor === 'echo' ? 'Echo · Coherenceism AI editorial team' : 'Coherenceism AI editorial team')
+    assert.equal(metadata.reviewedOn, '2026-09-25')
+    assert.match(raw, /## Sources/)
+    assert(!raw.includes('[^'), `${slug}: no unresolved footnotes`)
+    assert(!/!\[.*\]\(/.test(raw), `${slug}: no generated images`)
+  }
 })
 test('missing, invalid and rollover dates are explicitly unknown, never today', () => {
   for (const value of [undefined, null, '', 20260924, '2025-02-29', '2026-09-31', 'bad', '2026-09-24T01:00:00Z']) {
